@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ \"$CLAUDE_CODE_REMOTE\" = \"true\" ]; then cd \"$CLAUDE_PROJECT_DIR\" && npm ci --no-audit --no-fund > /tmp/npm-ci.log 2>&1 && echo 'npm ci done' || echo 'npm ci failed, see /tmp/npm-ci.log'; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

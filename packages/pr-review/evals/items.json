@@ -40,8 +40,8 @@
       ],
       "labelConfidence": "high",
       "evidence": "Fix PRs #75 and #81 both name #53/#67 as where the rule shipped; blame on the deleted lines agrees.",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-ui-kit#112",
@@ -72,8 +72,8 @@
       ],
       "labelConfidence": "high",
       "evidence": "Fix #119 says the check misfired on the first PR to add a nested bullet 'since this shipped'; blame on the moved line points at #112. Second defect from issue mining 2026-09-27: #119's CHANGELOG says the step 'sat between Build library and the dist/ freshness check' and moves it last.",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-ui-kit#84",
@@ -192,8 +192,8 @@
       ],
       "labelConfidence": "medium",
       "evidence": "Fix #140 ('Validation focus always jumped to the title'); blame points at #4.",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-task-management-challenge#118",
@@ -344,8 +344,8 @@
       ],
       "labelConfidence": "high",
       "evidence": "kit#69 (FENCE ignores inline code; states 'this predates #67', and #38 created scripts/figure-audit.mjs as a new file) and kit#70 (`2>&1` read as figures, figure-audit.mjs:38), both fixed in kit#81, which adds INLINE_CODE and REDIRECT stripping ahead of FIGURE. kit#53 (the script's own exemplar is a blind pipe and it scores such commands as valid), fixed in kit#67 (replaces the :51 exemplar and adds isBlindPipe ahead of SOURCED). kit#61 (CLAUDE.md exemplar cannot detect a failing gate), fixed in kit#65, which rewrites exactly that line. #38's diff adds all four locations as '+' lines (figure-audit.mjs is a new file; CLAUDE.md:125 is a '+' line). Defects 1-2 are high confidence; 3-4 are medium, because they rest on the later convention that provenance must detect a failing run. Same blind exemplar also added to .github/pull_request_template.md:30 and .github/ISSUE_TEMPLATE/lane-task.md:29 but still unfixed on main, so not labelled.",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-task-management-challenge#21",
@@ -376,8 +376,8 @@
       ],
       "labelConfidence": "high",
       "evidence": "Issue #36 (C3) names api/graphql.ts:99 `body: await request.text()` as an open proxy to RAVN's shared backend. Fix PR #46 (commit 2ab4886 'fix(proxy): serve six fixed operations instead of anything a caller sends') deletes that exact line, adds Content-Type (415) and 16 KB body-cap (413) checks, and states it moved 'the body read out of the try around fetch, where a caller hanging up mid-upload was being reported as \"the API did not respond in time\"'. api/graphql.ts is a new file in #21 (commits eaf3286, 30cd6b6, af790e0 all map to #21), so both defects were introduced here. The issue's second claim (10 s timeout can never fire) is NOT labelled: #46 verified Hobby's limit is 300 s with fluid compute and changed only the comment. Previously a clean item; flip to bug.",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-task-management-challenge#6",
@@ -416,8 +416,8 @@
       ],
       "labelConfidence": "high",
       "evidence": "Issue #34 (C1) items 1 and 3 cite use-board-filters.ts:67-72 (readOwner's knownIds.length === 0 pass-through) and :175 (isFiltered from debounced queryInput), matching the file at #6's head line for line. Fix PR #46 (commit 094b8cf 'tell loading apart from a failed people directory') replaces `knownIds.length === 0` with an explicit directoryStatus and deletes `isFiltered: Object.keys(queryInput).length > 0`. use-board-filters.ts and the header's URL-writing onChange are new in #6 (the `const { data: users } = useUsers()` line predates it, from #4, but #6 is what feeds that status-less value into validation). The header-route defect is from fix PR #140 ('The header search wrote ?name= on four routes that never read it'); at #6's head routes.tsx already wraps /settings (ProfilePage) in AppLayout, which renders AppHeader. Defect 1 high, defect 2 high, defect 3 medium confidence (the label review rejected blaming #118 for it because the write predates #118; #6 is where it originates).",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-task-management-challenge#9",
@@ -456,8 +456,8 @@
       ],
       "labelConfidence": "high",
       "evidence": "Issue #45 (C11) reports the safety hook reads `COMMAND=\"$1\"` and the PostToolUse hooks use a nonexistent $FILE_PATH. Both files are new in #9 (commit 7ff3376 maps to #9; `gh api commits?path=` shows it as the first commit of each). Fix PR #44 (commits 704d35a 'read the Bash command from stdin so the safety hook can refuse' and a69fd6a 'read the edited path from stdin so the formatters format something'); its body adds that 'its exit code was wrong too, since a non-zero exit that isn't 2 is a non-blocking error' and that the pre-fix script 'returns exit 0 and empty output on the same dangerous payloads'. Spotting it needs knowledge of the Claude Code hook protocol, which is documented; .claudeignore (the issue's third point) is not labelled.",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-task-management-challenge#15",
@@ -480,8 +480,8 @@
       ],
       "labelConfidence": "high",
       "evidence": ".github/dependabot.yml is new in #15 (commit 65f1b32). Four minutes after #15 merged, Dependabot opened #17 (graphql 16 -> 17) against main, and it merged unreviewed, leaving main and dev disagreeing about package.json (issue #27 cites this as the recorded incident). Fix PR #23 (commit fa8b118 'ci: point Dependabot at dev, not the default branch') adds only `target-branch: dev`, with a comment naming the graphql 17 incident. CLAUDE.md's 'Branch layout' section at #15's head already states 'Nothing merges into main directly', so a reviewer had the context.",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-task-management-challenge#44",
@@ -599,8 +599,8 @@
       "defects": [],
       "labelConfidence": "medium",
       "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-ui-kit#106",
@@ -614,8 +614,8 @@
       "defects": [],
       "labelConfidence": "medium",
       "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-ui-kit#66",
@@ -644,8 +644,8 @@
       "defects": [],
       "labelConfidence": "medium",
       "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-task-management-challenge#7",
@@ -659,8 +659,8 @@
       "defects": [],
       "labelConfidence": "medium",
       "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-task-management-challenge#80",
@@ -674,8 +674,8 @@
       "defects": [],
       "labelConfidence": "medium",
       "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-task-management-challenge#64",
@@ -689,8 +689,8 @@
       "defects": [],
       "labelConfidence": "medium",
       "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-task-management-challenge#73",
@@ -704,8 +704,8 @@
       "defects": [],
       "labelConfidence": "medium",
       "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     },
     {
       "id": "ravn-task-management-challenge#112",
@@ -719,8 +719,8 @@
       "defects": [],
       "labelConfidence": "medium",
       "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
-      "confirmed": false,
-      "confirmedBy": null
+      "confirmed": true,
+      "confirmedBy": "f3r21"
     }
   ]
 }
