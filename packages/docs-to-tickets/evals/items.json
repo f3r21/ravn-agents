@@ -1,0 +1,401 @@
+{
+  "frozen": "2026-09-26",
+  "source": "RAVN Coding Challenge brief, copied to evals/brief/ without its revision log or note metadata; UI-Kit (Figma exports) excluded.",
+  "briefSha256": "c0bacd9ae8cc311298a92d8d7d94e1d73ad9f21bfa661daefaffd14ddccd2c06",
+  "groundTruth": "The brief's 39 checkboxes. pr = the PR of f3r21/ravn-task-management-challenge (#1-#7) whose body says it covers that section; #8 (README) covers no checkbox.",
+  "split": "By section, because tickets may merge requirements within a section but never across sections: in brief order, every third checkbox section starting at the second (header, task-card, delete, show-the-user-information) is the calibration split; the other seven sections are the eval split. Thresholds are fitted on calibration only; the headline number is computed on eval only.",
+  "items": [
+    {
+      "id": "initial-setup.1",
+      "text": "Folder structure.",
+      "pr": 1,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "chore"
+      ]
+    },
+    {
+      "id": "initial-setup.2",
+      "text": "Routing configuration (You can add a basic NotFound and Error page if you'd like to).",
+      "pr": 1,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "chore",
+        "feature"
+      ]
+    },
+    {
+      "id": "initial-setup.3",
+      "text": "Styles solution.",
+      "pr": 1,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "chore"
+      ]
+    },
+    {
+      "id": "initial-setup.4",
+      "text": "Formatters / Linters (optional).",
+      "pr": 1,
+      "split": "eval",
+      "optional": true,
+      "acceptableTypes": [
+        "chore"
+      ]
+    },
+    {
+      "id": "initial-setup.5",
+      "text": "Error boundary (optional).",
+      "pr": 1,
+      "split": "eval",
+      "optional": true,
+      "acceptableTypes": [
+        "chore",
+        "feature"
+      ]
+    },
+    {
+      "id": "initial-setup.6",
+      "text": "Github actions (optional).",
+      "pr": 1,
+      "split": "eval",
+      "optional": true,
+      "acceptableTypes": [
+        "chore"
+      ]
+    },
+    {
+      "id": "header.1",
+      "text": "Add the profile image (avatar).",
+      "pr": 2,
+      "split": "calibration",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "header.2",
+      "text": "Add the notification icon.",
+      "pr": 2,
+      "split": "calibration",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "header.3",
+      "text": "Add the search icon.",
+      "pr": 2,
+      "split": "calibration",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "main-content.1",
+      "text": "Show the list and grid view icons (just ui elements without functionality).",
+      "pr": 2,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "main-content.2",
+      "text": "Add the \"+\" plus icon.",
+      "pr": 2,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "main-content.3",
+      "text": "Add the tasks columns (backlog, todo, in process, done, cancelled).",
+      "pr": 2,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "sidebar.1",
+      "text": "Add the logo at the top.",
+      "pr": 2,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "sidebar.2",
+      "text": "Add the list of menu navigation items (most of them can navigate to a placeholder/sample page).",
+      "pr": 2,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "sidebar.3",
+      "text": "Add the active state of the item.",
+      "pr": 2,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "task-card.1",
+      "text": "Name.",
+      "pr": 2,
+      "split": "calibration",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "task-card.2",
+      "text": "Tags (Android, React, etc).",
+      "pr": 2,
+      "split": "calibration",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "task-card.3",
+      "text": "Due date.",
+      "pr": 2,
+      "split": "calibration",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "task-card.4",
+      "text": "Estimated points.",
+      "pr": 2,
+      "split": "calibration",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "task-card.5",
+      "text": "User avatar (use a fake image or placeholder if not provided, eg: https://unsplash.com/ or faker: https://www.npmjs.com/package/faker).",
+      "pr": 2,
+      "split": "calibration",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "task-card.6",
+      "text": "Show the options icon (3 dots in the top right corner).",
+      "pr": 2,
+      "split": "calibration",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "create.1",
+      "text": "The create action should be the + red icon and it should show a create task modal when clicked.",
+      "pr": 4,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "create.2",
+      "text": "Use the createTask mutation to add a new task in the dashboard.",
+      "pr": 4,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "create.3",
+      "text": "Add error handlers for when the createTask mutation fails.",
+      "pr": 4,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "get.1",
+      "text": "Use the tasks query to pull all the available tasks and pu them into the appropriate column.",
+      "pr": 3,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "get.2",
+      "text": "Show loading indicator when necessary (eg: while fetching data, you can use spinners or skeletons).",
+      "pr": 3,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "get.3",
+      "text": "Indicate when a query has failed.",
+      "pr": 3,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "get.4",
+      "text": "Show an empty state when there are no results found.",
+      "pr": 3,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "delete.1",
+      "text": "Use the deleteTask mutation in order to delete a task by id.",
+      "pr": 5,
+      "split": "calibration",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "delete.2",
+      "text": "Show a confirmation message before deleting with confirm and delete buttons.",
+      "pr": 5,
+      "split": "calibration",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "delete.3",
+      "text": "Show a notification to indicate if the request succeed or failed.",
+      "pr": 5,
+      "split": "calibration",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "update.1",
+      "text": "Use the updateTask mutation to edit the card information.",
+      "pr": 5,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "update.2",
+      "text": "it should allow the user to edit the following information: DueDate; Name; Position; Status; Tags; EstimatedTime.",
+      "pr": 5,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "update.3",
+      "text": "Show a modal with all the editable fields.",
+      "pr": 5,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "update.4",
+      "text": "Show a confirm and cancel buttons to confirm edition or cancel the action.",
+      "pr": 5,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "update.5",
+      "text": "Show a notification to indicate if the request succeed or failed.",
+      "pr": 5,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "search-and-filter-tasks.1",
+      "text": "Add the logic to send filters the following optional filter in the request: Name; DueDate; OwnerId; Status; Tags; EstimatedPoints",
+      "pr": 6,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "search-and-filter-tasks.2",
+      "text": "If one or the combination of two or more filters doesn't return information show and empty results components in the UI.",
+      "pr": 6,
+      "split": "eval",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    },
+    {
+      "id": "show-the-user-information.1",
+      "text": "Show the following information: FullName; Email; Type; Position; CreatedAt; UpdateAt",
+      "pr": 7,
+      "split": "calibration",
+      "optional": false,
+      "acceptableTypes": [
+        "feature"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,401 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:ravn-agents:eval-report:1.0",
+  "title": "ravn-agents eval report",
+  "description": "One measured number for one tool, with its sample size, interval, baseline and failures.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "tool",
+    "metric",
+    "value",
+    "n",
+    "ci",
+    "baseline",
+    "failures",
+    "model",
+    "commit",
+    "date",
+    "dataset",
+    "grader"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "tool": {
+      "enum": [
+        "pr-review",
+        "onboarding",
+        "docs-to-tickets"
+      ]
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "kind",
+        "definition",
+        "higherIsBetter"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "kind": {
+          "enum": [
+            "proportion",
+            "mean",
+            "median"
+          ]
+        },
+        "definition": {
+          "type": "string",
+          "minLength": 10
+        },
+        "unit": {
+          "type": "string"
+        },
+        "higherIsBetter": {
+          "type": "boolean"
+        }
+      }
+    },
+    "value": {
+      "type": "number"
+    },
+    "n": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of independent items (PRs, questions, briefs), not trials."
+    },
+    "successes": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Required when metric.kind is proportion."
+    },
+    "trialsPerItem": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1
+    },
+    "ci": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "level",
+        "lower",
+        "upper"
+      ],
+      "properties": {
+        "method": {
+          "enum": [
+            "wilson",
+            "clopper-pearson",
+            "bootstrap",
+            "clustered-sem",
+            "none"
+          ]
+        },
+        "level": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 1
+        },
+        "lower": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "upper": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "baseline": {
+      "description": "Null only when no comparison was run; the reason goes in notes.",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label",
+            "value",
+            "n"
+          ],
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "value": {
+              "type": "number"
+            },
+            "n": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "successes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ci": {
+              "$ref": "#/properties/ci"
+            },
+            "paired": {
+              "type": "boolean",
+              "description": "True when baseline and tool ran on the same items."
+            },
+            "delta": {
+              "type": "number",
+              "description": "value minus baseline.value"
+            },
+            "deltaCi": {
+              "$ref": "#/properties/ci"
+            }
+          }
+        }
+      ]
+    },
+    "secondaryMetrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "n": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "ci": {
+            "$ref": "#/properties/ci"
+          },
+          "baselineValue": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "itemId",
+          "category",
+          "expected",
+          "actual"
+        ],
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "description": "A failure-mode id documented in the tool's failure-mode list, or 'other'."
+          },
+          "categoryDetail": {
+            "type": "string"
+          },
+          "expected": {
+            "type": "string"
+          },
+          "actual": {
+            "type": "string"
+          },
+          "transcript": {
+            "type": "string",
+            "description": "Path to the stored transcript for this item."
+          }
+        }
+      }
+    },
+    "grader": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "code",
+            "model",
+            "human",
+            "mixed"
+          ]
+        },
+        "judgeModel": {
+          "type": "string"
+        },
+        "rubric": {
+          "type": "string",
+          "description": "Path to the rubric file."
+        },
+        "humanAgreement": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "n",
+            "agreement"
+          ],
+          "properties": {
+            "n": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "agreement": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        }
+      }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "main"
+      ],
+      "properties": {
+        "main": {
+          "type": "string",
+          "description": "Full model ID of the session or coordinator, never an alias."
+        },
+        "subagents": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "effort": {
+          "type": "string"
+        }
+      }
+    },
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{7,40}$",
+      "description": "labs commit the tool ran from."
+    },
+    "pluginVersion": {
+      "type": "string"
+    },
+    "claudeCodeVersion": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repo",
+        "ref",
+        "items"
+      ],
+      "properties": {
+        "repo": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string",
+          "description": "Commit SHA of the evaluated repository."
+        },
+        "items": {
+          "type": "string",
+          "description": "Path to the frozen item list in labs."
+        },
+        "selection": {
+          "type": "string",
+          "description": "How items were chosen, including exclusions."
+        }
+      }
+    },
+    "cost": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "inputTokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "outputTokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "wallSeconds": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "partial": {
+      "type": "boolean",
+      "default": false
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "metric": {
+            "properties": {
+              "kind": {
+                "const": "proportion"
+              }
+            },
+            "type": "object"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "successes"
+        ],
+        "properties": {
+          "value": {
+            "minimum": 0,
+            "maximum": 1,
+            "type": "number"
+          }
+        }
+      }
+    }
+  ]
+}

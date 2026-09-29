@@ -1,0 +1,22 @@
+{
+  "finalText": "The codebase map is built at commit `ac7cb47`, and all 14 areas passed validation, so none are marked \"not covered\". `INDEX.md` is 56 lines.\n\n- **Mapped:** api, claude, docs, e2e, github, root, scripts, src, src-app, src-features, src-graphql, src-lib, src-mocks, src-ui.\n- **Retried once:**\n  - root cited a line past the end of `CLAUDE.md`.\n  - src-features cited `use-delete-task.ts` without its directory.\n  - src-ui had three claims with no `file:line` citation.\n\n  All three passed on the retry.\n\nThe validator confirms that every claim has a citation and that the cited file and line exist, but it doesn't check whether the claim is true. The first src-ui draft got through with one wrong statement: it said `ErrorBoundary` recovers by changing its `key` prop, but it actually reloads the page (`src/app/app.tsx:17`). The retry fixed that. When you review, check that the claims match the code, not just that the links work.\n\n- Review and commit `docs/codebase-map/` yourself. `.build/` has its own `.gitignore`, so it stays out of git.\n- To query the map, use `/ravn-agents:ask-codebase`. Don't add an `@docs/codebase-map` import to CLAUDE.md, because imports load on every launch; a one-line pointer is enough.\n- A `SessionStart` hook will report areas that have gone stale. Refresh them with `/ravn-agents:onboard --refresh`.",
+  "inputTokens": 2854485,
+  "outputTokens": 64543,
+  "toolCalls": 234,
+  "toolsByName": {
+    "Bash": 4,
+    "Agent": 17,
+    "Read": 162,
+    "Glob": 4,
+    "Grep": 29,
+    "Write": 18
+  },
+  "costUsd": 2.439,
+  "wallSeconds": 185.5,
+  "turns": 2,
+  "isError": false,
+  "costByModel": {
+    "claude-opus-5-5": 0.5189,
+    "claude-sonnet-5": 1.9201
+  }
+}

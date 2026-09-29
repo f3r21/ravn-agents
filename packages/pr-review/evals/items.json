@@ -1,0 +1,726 @@
+{
+  "schemaVersion": 1,
+  "frozenAt": "2026-09-27",
+  "selection": "Bug items: merged PRs of f3r21/ravn-ui-kit and f3r21/ravn-task-management-challenge whose lines a later fix PR deleted or modified (SZZ: blame of the fix's deleted source lines at its parent, comment and whitespace lines excluded, commits mapped to PRs, dev->main promotions skipped), kept only where the fix PR's own text corroborates the defect. Excluded: pairs where the inducing PR is over 6,000 changed lines (#13, #14, kit#17, app#1), and kit#143<-#104 (the chevron was dead since pre-PR commit bb39b9c). Clean items: merged code PRs of 20-1,500 changed lines that no fix PR's deleted lines blame to. Every item stays confirmed:false until a human checks it; the harness runs only confirmed items unless told otherwise. Extended 2026-09-27 with issue-linked mining: pairs where an issue or a later PR body describes wrong behaviour in lines a specific merged PR added or changed, verified against the inducing diff and the file at its head (moved code, pre-PR code, later drift, feature requests and PRs over the size cap rejected). This reclassified app#21 and kit#38 from clean to bug. Candidates and rejections are in evals/label-review.md.",
+  "items": [
+    {
+      "id": "ravn-ui-kit#67",
+      "repo": "f3r21/ravn-ui-kit",
+      "pr": 67,
+      "kind": "bug",
+      "headSha": "9cba7465511cdf2a169c3d5a762d034ecc855455",
+      "mergedAt": "2026-08-07T20:50:51Z",
+      "title": "feat(figure-audit): refuse to credit a command that cannot detect a failing run (#53)",
+      "changedLines": 183,
+      "defects": [
+        {
+          "path": "scripts/figure-audit.mjs",
+          "startLine": 88,
+          "endLine": 88,
+          "side": "RIGHT",
+          "description": "isBlindPipe flags any command that contains both a verification and a pipe, even when the pipe is downstream of a captured exit status (out=$(npm run gate); echo \"$out\" | grep ...), so a correct practice is reported as blind.",
+          "fixPr": 75
+        },
+        {
+          "path": "scripts/figure-audit.mjs",
+          "startLine": 83,
+          "endLine": 83,
+          "side": "RIGHT",
+          "description": "STATUS_ECHO does not recognise `set -o pipefail`, so a pipeline that preserves the gate's status is scored as blind.",
+          "fixPr": 81
+        },
+        {
+          "path": "scripts/figure-audit.mjs",
+          "startLine": 25,
+          "endLine": 25,
+          "side": "RIGHT",
+          "description": "FENCE strips fenced blocks but not inline code, so a command's own arguments (for example `2>&1`) are counted as figure claims.",
+          "fixPr": 81
+        }
+      ],
+      "labelConfidence": "high",
+      "evidence": "Fix PRs #75 and #81 both name #53/#67 as where the rule shipped; blame on the deleted lines agrees.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-ui-kit#112",
+      "repo": "f3r21/ravn-ui-kit",
+      "pr": 112,
+      "kind": "bug",
+      "headSha": "503158a375b2c66593fc9fc3b094bb8fc9234c89",
+      "mergedAt": "2026-08-08T17:21:08Z",
+      "title": "ci: check that a branch's changelog entries land in [Unreleased] (#107)",
+      "changedLines": 670,
+      "defects": [
+        {
+          "path": "scripts/changelog-placement.mjs",
+          "startLine": 90,
+          "endLine": 91,
+          "side": "RIGHT",
+          "description": "misplacedEntries trims a diff line before testing it against ENTRY, so an added nested bullet is promoted to a top-level entry that entrySections never recorded, and is reported as unlocatable corruption.",
+          "fixPr": 119
+        },
+        {
+          "path": ".github/workflows/ci.yml",
+          "startLine": 132,
+          "endLine": 150,
+          "side": "RIGHT",
+          "description": "The new changelog-placement step sits between 'Build library' and the dist/ freshness check, so a placement failure ends the job before the dist/, Storybook and axe checks run.",
+          "fixPr": 119
+        }
+      ],
+      "labelConfidence": "high",
+      "evidence": "Fix #119 says the check misfired on the first PR to add a nested bullet 'since this shipped'; blame on the moved line points at #112. Second defect from issue mining 2026-09-27: #119's CHANGELOG says the step 'sat between Build library and the dist/ freshness check' and moves it last.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-ui-kit#84",
+      "repo": "f3r21/ravn-ui-kit",
+      "pr": 84,
+      "kind": "bug",
+      "headSha": "4a1df421d4c7696a41e5f59558642760ad7fe35e",
+      "mergedAt": "2026-08-07T23:10:45Z",
+      "title": "fix(task-meta-badges): give the badges an accessible name that survives axe",
+      "changedLines": 105,
+      "defects": [
+        {
+          "path": "src/components/card/task-meta-badges.tsx",
+          "startLine": 12,
+          "endLine": 72,
+          "side": "RIGHT",
+          "description": "Every badge now requires a label rendered as sr-only text; the previous decorative (aria-hidden, unannounced) mode that consumers relied on was removed, a breaking change for callers that render badges decoratively.",
+          "fixPr": 109
+        }
+      ],
+      "labelConfidence": "medium",
+      "evidence": "Fix #109's title says the decorative mode was 'removed by accident' in the #19 work, which is PR #84.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-ui-kit#83",
+      "repo": "f3r21/ravn-ui-kit",
+      "pr": 83,
+      "kind": "bug",
+      "headSha": "b02e633aac5d100a1a265daab1a339d41c3bf0f8",
+      "mergedAt": "2026-08-07T22:55:26Z",
+      "title": "fix(add-task-modal): switch chips in one click, not two (#82)",
+      "changedLines": 1572,
+      "defects": [
+        {
+          "path": "src/components/modal/add-task-modal.tsx",
+          "startLine": 213,
+          "endLine": 213,
+          "side": "RIGHT",
+          "description": "The chip row is a non-wrapping flex row sized for the first font in --font-sans; under a fallback font the four chips overflow the modal's content box.",
+          "fixPr": 150
+        }
+      ],
+      "labelConfidence": "low",
+      "evidence": "Weak: an overflow only visible under fallback fonts. Blame on the changed class list points at #83.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#86",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 86,
+      "kind": "bug",
+      "headSha": "a01df5f3c6e4d870dd9df480c71e6cc76f1cfa68",
+      "mergedAt": "2026-08-07T17:05:54Z",
+      "title": "refactor: collapse the duplicated selects, filters and async states",
+      "changedLines": 1105,
+      "defects": [
+        {
+          "path": "src/ui/async-section/async-section.tsx",
+          "startLine": 74,
+          "endLine": 91,
+          "side": "RIGHT",
+          "description": "AsyncSection renders children only when status is 'success'; a failed background refetch reports 'error' while cached data remains, so a loaded board is replaced by the error state on an ordinary refetch.",
+          "fixPr": 140
+        }
+      ],
+      "labelConfidence": "high",
+      "evidence": "Fix #140 (defect 1 of 10); blame on async-section.tsx:79/91 points at #86.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#83",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 83,
+      "kind": "bug",
+      "headSha": "f75d4c1ab7e6b82b64daee8f21993d5eb2068855",
+      "mergedAt": "2026-08-07T16:29:24Z",
+      "title": "refactor(board): one dialog state machine, and transport rules where they can be tested",
+      "changedLines": 744,
+      "defects": [
+        {
+          "path": "src/features/board/task-mapping.ts",
+          "startLine": 98,
+          "endLine": 108,
+          "side": "RIGHT",
+          "description": "toUpdateInput resends every field from the form snapshot instead of only the edited ones, so the patch semantics use-update-task documents are never used and a concurrent edit to another field is overwritten.",
+          "fixPr": 140
+        }
+      ],
+      "labelConfidence": "medium",
+      "evidence": "Fix #140 (defect 3 of 10); blame on toUpdateInput points at #83.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#4",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 4,
+      "kind": "bug",
+      "headSha": "7dd054b84550354791a935f37565ab8bfa043d8a",
+      "mergedAt": "2026-08-04T23:16:20Z",
+      "title": "Create tasks from a modal",
+      "changedLines": 1377,
+      "defects": [
+        {
+          "path": "src/features/board/task-form-dialog.tsx",
+          "startLine": 80,
+          "endLine": 90,
+          "side": "RIGHT",
+          "description": "On any validation error the dialog focuses the name field, including for errors about other fields (for example 'Pick a due date.'), so focus lands on the wrong control.",
+          "fixPr": 140
+        }
+      ],
+      "labelConfidence": "medium",
+      "evidence": "Fix #140 ('Validation focus always jumped to the title'); blame points at #4.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#118",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 118,
+      "kind": "bug",
+      "headSha": "9fe2eafb72da26962ed2c49c5c435665cb40ec9a",
+      "mergedAt": "2026-08-08T16:49:21Z",
+      "title": "feat(shell): migrate the header and view switcher onto @ravn/ui-kit (#32)",
+      "changedLines": 330,
+      "defects": [
+        {
+          "path": "src/features/navigation/app-header.tsx",
+          "startLine": 55,
+          "endLine": 66,
+          "side": "RIGHT",
+          "description": "The header search writes ?name= through the board filters on every route, including routes that never read it.",
+          "fixPr": 140
+        }
+      ],
+      "labelConfidence": "medium",
+      "evidence": "Fix #140 ('The header search wrote ?name= on four routes that never read it'); blame on app-header.tsx:59 points at #118.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#117",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 117,
+      "kind": "bug",
+      "headSha": "cf8f225e2f5a25a32b5890d268a0f884a5feda24",
+      "mergedAt": "2026-08-08T15:48:29Z",
+      "title": "feat(board): migrate the list view onto @ravn/ui-kit's TaskTable (#31)",
+      "changedLines": 604,
+      "defects": [
+        {
+          "path": "src/features/board/board-list-table.tsx",
+          "startLine": 65,
+          "endLine": 65,
+          "side": "RIGHT",
+          "description": "The list view renders TaskTable without paint containment, so its 1108px scroll content is added to the document's scrollable width and the whole page scrolls sideways.",
+          "fixPr": 146
+        },
+        {
+          "path": "src/features/board/board.tsx",
+          "startLine": 62,
+          "endLine": 63,
+          "side": "RIGHT",
+          "description": "The board's horizontal scroll container adds its content width to the document, so the page scrolls sideways with the board.",
+          "fixPr": 142
+        }
+      ],
+      "labelConfidence": "medium",
+      "evidence": "Fixes #142 and #146; blame on board.tsx:63 and board-list-table.tsx:65 points at #117. Arguably layout, hard for a diff review.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#74",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 74,
+      "kind": "bug",
+      "headSha": "05e6a79ada6a39ef5cb850790bf61b0de310531f",
+      "mergedAt": "2026-08-07T00:32:53Z",
+      "title": "Provision lane worktrees with scripts/new-lane.sh",
+      "changedLines": 371,
+      "defects": [
+        {
+          "path": "scripts/new-lane.sh",
+          "startLine": 242,
+          "endLine": 249,
+          "side": "RIGHT",
+          "description": "The closing message tells every lane to export .env into its shell before starting claude, which puts the API token in the shell environment and is no longer how .mcp.json receives it.",
+          "fixPr": 134
+        }
+      ],
+      "labelConfidence": "low",
+      "evidence": "Ambiguous: fix #134 says the message became wrong after #123 changed .mcp.json, so #74 may have been correct when merged.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#109",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 109,
+      "kind": "bug",
+      "headSha": "1064e09c7fabfc1c4cc3cb3907afa76553981801",
+      "mergedAt": "2026-08-08T11:18:44Z",
+      "title": "feat(board): migrate the board onto @ravn/ui-kit, and stop where the kit cannot (A3)",
+      "changedLines": 1690,
+      "defects": [
+        {
+          "path": "src/features/board/task-card/to-kit-props.ts",
+          "startLine": 137,
+          "endLine": 160,
+          "side": "RIGHT",
+          "description": "toKitTableRowProps never passes indicatorColor, so every list row shows the kit's default green stripe regardless of status.",
+          "fixPr": 153
+        }
+      ],
+      "labelConfidence": "low",
+      "evidence": "Weak: the kit had no status mapping until kit#141, so this may be a kit gap rather than a defect #109 introduced.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-ui-kit#38",
+      "repo": "f3r21/ravn-ui-kit",
+      "pr": 38,
+      "kind": "bug",
+      "headSha": "cd4dd1931d5eb4a9fe37c387c6fab1d6b58bb797",
+      "mergedAt": "2026-08-06T22:54:44Z",
+      "title": "feat: every figure carries the command that re-derives it",
+      "changedLines": 243,
+      "defects": [
+        {
+          "path": "scripts/figure-audit.mjs",
+          "startLine": 22,
+          "endLine": 25,
+          "side": "RIGHT",
+          "description": "FENCE strips only fenced blocks, so numbers inside inline backtick code (e.g. `tail -6`, loop indices) are still counted as figures, contradicting the comment directly above that says command internals must not be counted.",
+          "fixPr": 81
+        },
+        {
+          "path": "scripts/figure-audit.mjs",
+          "startLine": 38,
+          "endLine": 38,
+          "side": "RIGHT",
+          "description": "FIGURE matches any digit run, so a shell redirect like `2>&1` is counted as the figures 2 and 1, inflating the substantive and sourced counts on every gate-sourced line.",
+          "fixPr": 81
+        },
+        {
+          "path": "scripts/figure-audit.mjs",
+          "startLine": 46,
+          "endLine": 58,
+          "side": "RIGHT",
+          "description": "SOURCED credits any adjacent command as provenance, including its own exemplar `npm run gate 2>&1 | tail -6`, whose pipe discards the gate's exit status, so a figure read from a failing run is scored as validly sourced.",
+          "fixPr": 67
+        },
+        {
+          "path": "CLAUDE.md",
+          "startLine": 125,
+          "endLine": 125,
+          "side": "RIGHT",
+          "description": "The provenance exemplar every lane copies, `npm run gate 2>&1 | grep -E 'Test Files|Tests  '`, reports grep's exit status rather than the gate's, so it cannot distinguish a passing gate from a failing one.",
+          "fixPr": 65
+        }
+      ],
+      "labelConfidence": "high",
+      "evidence": "kit#69 (FENCE ignores inline code; states 'this predates #67', and #38 created scripts/figure-audit.mjs as a new file) and kit#70 (`2>&1` read as figures, figure-audit.mjs:38), both fixed in kit#81, which adds INLINE_CODE and REDIRECT stripping ahead of FIGURE. kit#53 (the script's own exemplar is a blind pipe and it scores such commands as valid), fixed in kit#67 (replaces the :51 exemplar and adds isBlindPipe ahead of SOURCED). kit#61 (CLAUDE.md exemplar cannot detect a failing gate), fixed in kit#65, which rewrites exactly that line. #38's diff adds all four locations as '+' lines (figure-audit.mjs is a new file; CLAUDE.md:125 is a '+' line). Defects 1-2 are high confidence; 3-4 are medium, because they rest on the later convention that provenance must detect a failing run. Same blind exemplar also added to .github/pull_request_template.md:30 and .github/ISSUE_TEMPLATE/lane-task.md:29 but still unfixed on main, so not labelled.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#21",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 21,
+      "kind": "bug",
+      "headSha": "af790e06121753b0a157475d27ecf89558978f2e",
+      "mergedAt": "2026-08-05T21:42:08Z",
+      "title": "feat: deploy to Vercel, with a proxy so the live API works without shipping the token",
+      "changedLines": 840,
+      "defects": [
+        {
+          "path": "api/graphql.ts",
+          "startLine": 94,
+          "endLine": 101,
+          "side": "RIGHT",
+          "description": "The proxy forwards the caller's raw body (`body: await request.text()`) under RAVN's bearer token with no operation allowlist, content-type check or size cap, so anyone can run arbitrary queries and mutations (deleteTask on any id, introspection, huge bodies) against RAVN's shared API.",
+          "fixPr": 46
+        },
+        {
+          "path": "api/graphql.ts",
+          "startLine": 99,
+          "endLine": 103,
+          "side": "RIGHT",
+          "description": "The inbound `request.text()` is awaited inside the try that guards the upstream fetch, so a client that aborts mid-upload is reported as a 504 'The API did not respond in time.' instead of a client error.",
+          "fixPr": 46
+        }
+      ],
+      "labelConfidence": "high",
+      "evidence": "Issue #36 (C3) names api/graphql.ts:99 `body: await request.text()` as an open proxy to RAVN's shared backend. Fix PR #46 (commit 2ab4886 'fix(proxy): serve six fixed operations instead of anything a caller sends') deletes that exact line, adds Content-Type (415) and 16 KB body-cap (413) checks, and states it moved 'the body read out of the try around fetch, where a caller hanging up mid-upload was being reported as \"the API did not respond in time\"'. api/graphql.ts is a new file in #21 (commits eaf3286, 30cd6b6, af790e0 all map to #21), so both defects were introduced here. The issue's second claim (10 s timeout can never fire) is NOT labelled: #46 verified Hobby's limit is 300 s with fluid compute and changed only the comment. Previously a clean item; flip to bug.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#6",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 6,
+      "kind": "bug",
+      "headSha": "c63c8c4b180db4c1a6a485c21b227dbf236e905e",
+      "mergedAt": "2026-08-04T23:17:16Z",
+      "title": "Search and filter tasks",
+      "changedLines": 1048,
+      "defects": [
+        {
+          "path": "src/features/board/use-board-filters.ts",
+          "startLine": 67,
+          "endLine": 72,
+          "side": "RIGHT",
+          "description": "readOwner treats an empty knownIds as 'still loading' and passes any ?owner= id through, but an errored Users query (board-page only takes `data`) is also permanently empty, so a failed directory disables owner validation for the whole session and unvalidated ids reach the API.",
+          "fixPr": 46
+        },
+        {
+          "path": "src/features/board/use-board-filters.ts",
+          "startLine": 175,
+          "endLine": 175,
+          "side": "RIGHT",
+          "description": "isFiltered is derived from queryInput, which uses the debounced name, so for 300 ms after typing a search the Clear filters button stays hidden and the empty state reads as unfiltered.",
+          "fixPr": 46
+        },
+        {
+          "path": "src/features/navigation/app-header.tsx",
+          "startLine": 40,
+          "endLine": 55,
+          "side": "RIGHT",
+          "description": "The header search, rendered by AppLayout on every route, writes ?name= to whatever route is current, so typing on /settings changes that page's URL and filters nothing instead of driving the board.",
+          "fixPr": 140
+        }
+      ],
+      "labelConfidence": "high",
+      "evidence": "Issue #34 (C1) items 1 and 3 cite use-board-filters.ts:67-72 (readOwner's knownIds.length === 0 pass-through) and :175 (isFiltered from debounced queryInput), matching the file at #6's head line for line. Fix PR #46 (commit 094b8cf 'tell loading apart from a failed people directory') replaces `knownIds.length === 0` with an explicit directoryStatus and deletes `isFiltered: Object.keys(queryInput).length > 0`. use-board-filters.ts and the header's URL-writing onChange are new in #6 (the `const { data: users } = useUsers()` line predates it, from #4, but #6 is what feeds that status-less value into validation). The header-route defect is from fix PR #140 ('The header search wrote ?name= on four routes that never read it'); at #6's head routes.tsx already wraps /settings (ProfilePage) in AppLayout, which renders AppHeader. Defect 1 high, defect 2 high, defect 3 medium confidence (the label review rejected blaming #118 for it because the write predates #118; #6 is where it originates).",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#9",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 9,
+      "kind": "bug",
+      "headSha": "a92bae1fee2a909ee8a479f81f4524cd3464d004",
+      "mergedAt": "2026-08-04T23:20:26Z",
+      "title": "chore: add AI toolkit config, fix graphql/context7 MCP servers",
+      "changedLines": 451,
+      "defects": [
+        {
+          "path": ".claude/hooks/block-dangerous.sh",
+          "startLine": 4,
+          "endLine": 4,
+          "side": "RIGHT",
+          "description": "The PreToolUse hook reads the command from `$1`, but Claude Code passes the tool call as JSON on stdin, so COMMAND is always empty and the hook never blocks rm -rf /, force-push or curl | sh.",
+          "fixPr": 44
+        },
+        {
+          "path": ".claude/hooks/block-dangerous.sh",
+          "startLine": 12,
+          "endLine": 13,
+          "side": "RIGHT",
+          "description": "Even on a match the hook exits 1, which Claude Code treats as a non-blocking error and runs the command anyway; blocking needs exit 2 or a JSON permissionDecision of deny.",
+          "fixPr": 44
+        },
+        {
+          "path": ".claude/settings.json",
+          "startLine": 20,
+          "endLine": 25,
+          "side": "RIGHT",
+          "description": "The PostToolUse format hooks run eslint --fix and prettier on \"$FILE_PATH\", a variable Claude Code never sets (the edited path arrives on stdin), and `|| true` hides the failure, so they format nothing.",
+          "fixPr": 44
+        }
+      ],
+      "labelConfidence": "high",
+      "evidence": "Issue #45 (C11) reports the safety hook reads `COMMAND=\"$1\"` and the PostToolUse hooks use a nonexistent $FILE_PATH. Both files are new in #9 (commit 7ff3376 maps to #9; `gh api commits?path=` shows it as the first commit of each). Fix PR #44 (commits 704d35a 'read the Bash command from stdin so the safety hook can refuse' and a69fd6a 'read the edited path from stdin so the formatters format something'); its body adds that 'its exit code was wrong too, since a non-zero exit that isn't 2 is a non-blocking error' and that the pre-fix script 'returns exit 0 and empty output on the same dangerous payloads'. Spotting it needs knowledge of the Claude Code hook protocol, which is documented; .claudeignore (the issue's third point) is not labelled.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#15",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 15,
+      "kind": "bug",
+      "headSha": "65f1b3233e10c926f57800558e64a687db374f99",
+      "mergedAt": "2026-08-05T17:56:55Z",
+      "title": "perf: halve the entry chunk; ci: gate, bundle budget, audit, dependabot",
+      "changedLines": 161,
+      "defects": [
+        {
+          "path": ".github/dependabot.yml",
+          "startLine": 4,
+          "endLine": 8,
+          "side": "RIGHT",
+          "description": "The npm update block sets no `target-branch: dev`, so Dependabot opens its PRs against the default branch main, bypassing dev in a repo whose CLAUDE.md says nothing merges into main except dev promotions.",
+          "fixPr": 23
+        }
+      ],
+      "labelConfidence": "high",
+      "evidence": ".github/dependabot.yml is new in #15 (commit 65f1b32). Four minutes after #15 merged, Dependabot opened #17 (graphql 16 -> 17) against main, and it merged unreviewed, leaving main and dev disagreeing about package.json (issue #27 cites this as the recorded incident). Fix PR #23 (commit fa8b118 'ci: point Dependabot at dev, not the default branch') adds only `target-branch: dev`, with a comment naming the graphql 17 incident. CLAUDE.md's 'Branch layout' section at #15's head already states 'Nothing merges into main directly', so a reviewer had the context.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#44",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 44,
+      "kind": "bug",
+      "headSha": "c9d4730e4dc81333519eee28d0aadd9099194b0d",
+      "mergedAt": "2026-08-06T11:45:02Z",
+      "title": "Foundation — app-config lane",
+      "changedLines": 2048,
+      "defects": [
+        {
+          "path": ".claude/hooks/block-dangerous.sh",
+          "startLine": 70,
+          "endLine": 70,
+          "side": "RIGHT",
+          "description": "FORCE_PUSH models each git global option as one whitespace-free token and ends the force flags with `([[:space:]]|$)`, so `git -C <path> push --force`, `git -c k=v push -f`, `git push --force;` and `(git push --force)` all get past the hook.",
+          "fixPr": 73
+        }
+      ],
+      "labelConfidence": "medium",
+      "evidence": "Issue #63 section A cites block-dangerous.sh:70 (the `([[:space:]]+-[^[:space:]]+)*` global-option model misses `-C <path>`) and section B (the `([[:space:]]|$)` flag end misses flush `;`/`)`). Line 70 was written in #44 (commit 704d35a, which rewrote the hook to read stdin). Fix PR #73 'Close two force-push evasions the guard's regex let through' (commit 1b4a314) replaces exactly that line with GIT_GLOBAL_OPTION and FORCE_FLAG_END. Medium because the holes are regex edge cases in a 2,048-line PR that is mostly CI/docs, though the regex is short and its own comment names the variants it means to catch.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#5",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 5,
+      "kind": "bug",
+      "headSha": "a35ad1e9f0874cc30d9015ced9a749d18e668c0e",
+      "mergedAt": "2026-08-04T23:16:50Z",
+      "title": "Edit and delete tasks from the card menu",
+      "changedLines": 1231,
+      "defects": [
+        {
+          "path": "src/features/board/board-page.tsx",
+          "startLine": 113,
+          "endLine": 127,
+          "side": "RIGHT",
+          "description": "handleEdit resends every field from the dialog's open-time snapshot, even though useUpdateTask in the same PR documents UpdateTaskInput as a patch precisely so an edit does not clobber a concurrent change, so saving one field overwrites any other field someone changed in between.",
+          "fixPr": 140
+        }
+      ],
+      "labelConfidence": "medium",
+      "evidence": "Fix PR #140 ('ten defects from a high-effort review'): '`toUpdateInput` resent the whole open-time snapshot, so the patch semantics `use-update-task.ts` documents were never used by any call site. It now diffs against `toFormFields(task)`; an unedited save sends `{ id }` alone.' Both halves are new in #5: use-update-task.ts:10-12 ('only the fields present are applied, so a caller changing just the status does not have to resend the name and risk clobbering an edit someone else made in between') and board-page.tsx:113-127, which sends id, name, status, tags, dueDate, pointEstimate and assigneeId on every save. #83 later moved this verbatim into task-mapping.ts, which is why the label review rejected blaming #83. Medium because it can be read as unadopted patch semantics rather than a bug, but the PR's own doc comment names the failure.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-ui-kit#35",
+      "repo": "f3r21/ravn-ui-kit",
+      "pr": 35,
+      "kind": "bug",
+      "headSha": "e5169120b486160cbba143eb3eeb6550e12ba600",
+      "mergedAt": "2026-08-06T15:33:40Z",
+      "title": "fix(claude): make the copied hooks actually run, and fail the gate when they do not",
+      "changedLines": 529,
+      "defects": [
+        {
+          "path": "src/styles/decisions.mdx",
+          "startLine": 98,
+          "endLine": 102,
+          "side": "RIGHT",
+          "description": "The new 833px measurement table is a GFM pipe table, but the Storybook MDX pipeline has no remark-gfm (open issue #21), so it publishes as a run of literal pipe characters; the rest of this file uses literal <table> markup for exactly this reason.",
+          "fixPr": 36
+        },
+        {
+          "path": "scripts/hooks.test.mjs",
+          "startLine": 149,
+          "endLine": 188,
+          "side": "RIGHT",
+          "description": "The format-file.sh cases each spawn bash plus a real Prettier process yet run under vitest's undeclared 5000ms default timeout, so they fail intermittently under machine load and make the gate flaky.",
+          "fixPr": 124
+        }
+      ],
+      "labelConfidence": "medium",
+      "evidence": "Defect 1: kit#36's body states 'c7e1186 is a fix for a bug I introduced in #35 ... added the 833px measurement table to decisions.mdx as a pipe table'. The table is a '+' block in #35's diff, and decisions.mdx:25 at the same head uses <table>. Issue kit#21 (no remark-gfm, pipe tables render raw) was open and names decisions.mdx as the file that avoids the trap. Defect 2 (low confidence): kit#63 names the two format-file.sh cases 'formats the file named by tool_input.file_path' and 'exits cleanly for a file Prettier has no parser for' timing out at 5000ms under load. git blame before kit#124 attributes the describe block and both cases to e51333b, which is in #35. kit#124 adds { timeout: 20000 } to that describe. Whether a reviewer would call a default timeout a defect is doubtful.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-ui-kit#65",
+      "repo": "f3r21/ravn-ui-kit",
+      "pr": 65,
+      "kind": "bug",
+      "headSha": "6dc95115a47cad4d52543856abbe171ce0fc12c4",
+      "mergedAt": "2026-08-07T20:38:54Z",
+      "title": "docs: fix the provenance exemplar, which could not detect a failing gate (#61)",
+      "changedLines": 78,
+      "defects": [
+        {
+          "path": "CLAUDE.md",
+          "startLine": 113,
+          "endLine": 126,
+          "side": "RIGHT",
+          "description": "The new 'Do not cut tags by hand' rule (and 'Tagging is a command now' at :95) contradicts the unchanged 'Who cuts which tag' paragraph eleven lines below, which still tells the reviewer who merges the PR to cut the real vX.Y.Z by hand.",
+          "fixPr": 77
+        }
+      ],
+      "labelConfidence": "medium",
+      "evidence": "kit#76 quotes CLAUDE.md:113 ('Do not cut tags by hand') against :124-125 ('The reviewer who merges the PR cuts the real vX.Y.Z'). kit#77, the fix, says: '#61 rewrote the top of that file for the Release workflow and left the bottom describing the pre-workflow world'. #65 is the PR closing #61. Its diff replaces 'Tagging is a checklist, not a command' with 'Tagging is a command now' (:95) and adds :113 as a '+' line. :120-126 are unchanged context just past the hunk end (:121), so a reviewer needs the file at head to see the clash. Before #65 the file was self-consistent, so #65 introduced the contradiction; it is not later drift. Range 113-126 spans the added rule and the contradicted paragraph.",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-ui-kit#42",
+      "repo": "f3r21/ravn-ui-kit",
+      "pr": 42,
+      "kind": "clean",
+      "headSha": "38ebdd37077c0c9dae56570815ef0934ced60763",
+      "mergedAt": "2026-08-07T00:17:27Z",
+      "title": "feat(scripts): new-lane.sh — provision a worktree that cannot start broken",
+      "changedLines": 255,
+      "defects": [],
+      "labelConfidence": "medium",
+      "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-ui-kit#106",
+      "repo": "f3r21/ravn-ui-kit",
+      "pr": 106,
+      "kind": "clean",
+      "headSha": "74b1f09d7c4c1a4c452eb66b2e8d7ae0b28ceb20",
+      "mergedAt": "2026-08-08T12:41:12Z",
+      "title": "test(release): catch the two changelog corruptions a union merge produces (#74)",
+      "changedLines": 270,
+      "defects": [],
+      "labelConfidence": "medium",
+      "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-ui-kit#66",
+      "repo": "f3r21/ravn-ui-kit",
+      "pr": 66,
+      "kind": "clean",
+      "headSha": "7e970ebadb9d8c58faa62b5c892d517fb54cefa0",
+      "mergedAt": "2026-08-07T20:46:22Z",
+      "title": "fix(modal): describe an alertdialog, and let a consumer pin it open (#64)",
+      "changedLines": 173,
+      "defects": [],
+      "labelConfidence": "medium",
+      "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-ui-kit#131",
+      "repo": "f3r21/ravn-ui-kit",
+      "pr": 131,
+      "kind": "clean",
+      "headSha": "cde16d0a7095557bcee7ea1058d57fec4fbfe021",
+      "mergedAt": "2026-08-09T19:15:03Z",
+      "title": "chore(tooling): measure the prop surface, and split declared from inherited",
+      "changedLines": 839,
+      "defects": [],
+      "labelConfidence": "medium",
+      "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#7",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 7,
+      "kind": "clean",
+      "headSha": "2c96113142a94deec755f35950807cfa826c3028",
+      "mergedAt": "2026-08-04T23:17:39Z",
+      "title": "Show the signed-in user on a settings route",
+      "changedLines": 434,
+      "defects": [],
+      "labelConfidence": "medium",
+      "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#80",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 80,
+      "kind": "clean",
+      "headSha": "ef815681a6b287dbf7dbac64a0d16f24c3bf378e",
+      "mergedAt": "2026-08-07T15:51:31Z",
+      "title": "perf(board): stop every keystroke re-rendering the board, and delete optimistically",
+      "changedLines": 611,
+      "defects": [],
+      "labelConfidence": "medium",
+      "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#64",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 64,
+      "kind": "clean",
+      "headSha": "0db040b5a6f4201f7f7173578bc04f8a0aa38dfb",
+      "mergedAt": "2026-08-06T23:38:39Z",
+      "title": "S1 — the four graded items: update-failure toast, placeholder pages, green tier, mutation latency",
+      "changedLines": 517,
+      "defects": [],
+      "labelConfidence": "medium",
+      "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#73",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 73,
+      "kind": "clean",
+      "headSha": "6c5b877c4f96092a2bee64d329a63fbd183a0696",
+      "mergedAt": "2026-08-06T23:57:39Z",
+      "title": "Close two force-push evasions the guard's regex let through",
+      "changedLines": 145,
+      "defects": [],
+      "labelConfidence": "medium",
+      "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
+      "confirmed": false,
+      "confirmedBy": null
+    },
+    {
+      "id": "ravn-task-management-challenge#112",
+      "repo": "f3r21/ravn-task-management-challenge",
+      "pr": 112,
+      "kind": "clean",
+      "headSha": "dffdf92fea414b4fce9ab5f7588931a4a70bf061",
+      "mergedAt": "2026-08-08T12:10:58Z",
+      "title": "refactor(board): look the two remaining board values up instead of asserting them (#110)",
+      "changedLines": 78,
+      "defects": [],
+      "labelConfidence": "medium",
+      "evidence": "No later fix PR deletes or modifies a source line blamed to this PR (SZZ over every fix-titled merged PR, run 2026-09-26).",
+      "confirmed": false,
+      "confirmedBy": null
+    }
+  ]
+}

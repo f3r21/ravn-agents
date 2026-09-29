@@ -1,0 +1,12 @@
+
+- [ ] Use the **updateTask** mutation to edit the card information.
+- [ ] it should allow the user to edit the following information:
+	- DueDate 
+	- Name 
+	- Position 
+	- Status 
+	- Tags 
+	- EstimatedTime.
+- [ ] Show a modal with all the editable fields.
+- [ ] Show a confirm and cancel buttons to confirm edition or cancel the action.
+- [ ] Show a notification to indicate if the request succeed or failed.

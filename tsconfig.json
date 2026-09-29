@@ -1,0 +1,9 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/eval-core" },
+    { "path": "./packages/pr-review" },
+    { "path": "./packages/onboarding" },
+    { "path": "./packages/docs-to-tickets" }
+  ]
+}

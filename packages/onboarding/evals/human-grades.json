@@ -1,0 +1,17 @@
+{
+  "instructions": "After a full run, read each item's with-map answer in <results dir>/results.json (condition \"map\", trial 1) and grade it pass or fail against evals/rubric.md without looking at the judge's verdict. Then run: npm run eval -w packages/onboarding -- report --results <dir> --human packages/onboarding/evals/human-grades.json. Agreement is recorded as grader.humanAgreement.",
+  "grader": "",
+  "run": "",
+  "grades": {
+    "Q11": null,
+    "Q12": null,
+    "Q13": null,
+    "Q14": null,
+    "Q15": null,
+    "Q17": null,
+    "Q22": null,
+    "Q23": null,
+    "Q24": null,
+    "Q25": null
+  }
+}

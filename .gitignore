@@ -1,0 +1,9 @@
+node_modules/
+*.tsbuildinfo
+.DS_Store
+# Eval runs are local; force-add only the runs whose numbers are published.
+packages/*/evals/results/
+# dist/ is committed on purpose: the plugin cache runs no build step at install.
+# Local Claude Code state
+.claude/worktrees/
+.claude/settings.local.json

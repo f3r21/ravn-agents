@@ -1,0 +1,14 @@
+{
+  "name": "ravn-labs",
+  "description": "RAVN engineering tools built on the CCAF exam concepts",
+  "owner": {
+    "name": "RAVN"
+  },
+  "plugins": [
+    {
+      "name": "ravn-agents",
+      "source": ".",
+      "description": "PR reviewer, codebase onboarding and docs-to-tickets"
+    }
+  ]
+}

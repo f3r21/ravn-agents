@@ -1,0 +1,14 @@
+{
+  "name": "@ravn-agents/pr-review",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": { "ravn-pr-review": "./dist/cli.js" },
+  "scripts": {
+    "build": "esbuild src/cli.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/cli.js",
+    "eval": "node src/eval/cli.ts"
+  },
+  "dependencies": {
+    "@ravn-agents/eval-core": "0.1.0"
+  }
+}

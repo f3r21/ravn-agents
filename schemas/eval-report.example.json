@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "1.0",
+  "tool": "pr-review",
+  "metric": {
+    "name": "historical_bug_recall",
+    "kind": "proportion",
+    "definition": "Share of historical PRs whose bug (fixed by a later PR) the reviewer flagged at high or critical severity on the original diff.",
+    "higherIsBetter": true
+  },
+  "value": 0.6,
+  "n": 20,
+  "successes": 12,
+  "trialsPerItem": 1,
+  "ci": {
+    "method": "wilson",
+    "level": 0.95,
+    "lower": 0.387,
+    "upper": 0.781
+  },
+  "baseline": {
+    "label": "single-prompt review, same model, no subagents",
+    "value": 0.35,
+    "n": 20,
+    "successes": 7,
+    "paired": true,
+    "delta": 0.25
+  },
+  "secondaryMetrics": [
+    {
+      "name": "inline_precision",
+      "value": 0.71,
+      "n": 17,
+      "unit": "proportion"
+    }
+  ],
+  "failures": [
+    {
+      "itemId": "ravn-ui-kit#41",
+      "category": "missed-cross-file",
+      "expected": "Flag the prop rename that breaks Button consumers",
+      "actual": "No finding at high or critical",
+      "transcript": "packages/pr-review/evals/results/2026-09-28/ravn-ui-kit-41.jsonl"
+    }
+  ],
+  "grader": {
+    "type": "model",
+    "judgeModel": "claude-opus-5-5",
+    "rubric": "packages/pr-review/evals/rubric.md",
+    "humanAgreement": {
+      "n": 10,
+      "agreement": 0.9
+    }
+  },
+  "model": {
+    "main": "claude-opus-5-5",
+    "subagents": {
+      "pr-security": "claude-opus-5-5"
+    }
+  },
+  "commit": "0a1b2c3",
+  "pluginVersion": "0.1.0",
+  "date": "2026-09-28T15:00:00Z",
+  "dataset": {
+    "repo": "f3r21/ravn-ui-kit",
+    "ref": "3f2e1d0c9b8a",
+    "items": "packages/pr-review/evals/items.json",
+    "selection": "Every PR later referenced as fixed by another PR; see items.json"
+  },
+  "cost": {
+    "usd": 4.2,
+    "wallSeconds": 1260
+  },
+  "partial": false,
+  "notes": "Illustrative values only."
+}

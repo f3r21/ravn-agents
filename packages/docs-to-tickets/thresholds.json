@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "calibrated": false,
+  "target_precision": 0.9,
+  "fields": {
+    "source_refs": { "min": "high" },
+    "type": { "min": "high" },
+    "priority": { "min": "high" },
+    "acceptance_criteria": { "min": "high" }
+  },
+  "notes": "Uncalibrated default: only high confidence on every field skips review. Replace with the thresholds a calibration run proposes (evals/run.ts writes them next to its report)."
+}

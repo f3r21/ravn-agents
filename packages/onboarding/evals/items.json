@@ -1,0 +1,461 @@
+{
+  "version": 1,
+  "frozenAt": "2026-09-26",
+  "repo": "f3r21/ravn-task-management-challenge",
+  "askRef": "ac7cb47c1e590616da040840cb26cb4e203d99f8",
+  "staleMapRef": "8acf17dcca28036fa99cf09408e3646901d6add1",
+  "selection": "Written by reading the code at askRef, before any tuning of the skills. Categories follow SWE-QA (where / what / how / why) plus config, stale (answer changed between staleMapRef and askRef; the map for these items is built at staleMapRef) and unanswerable (the repository does not contain what the question presumes). Code-graded when the answer is a short value; judge-graded for free-text How/Why answers.",
+  "items": [
+    {
+      "id": "Q01",
+      "category": "where",
+      "question": "Which file defines the application's route table, and what is the exported constant called?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "src/app/routes.tsx exports `routes`, a plain RouteObject[] array.",
+        "evidence": [
+          "src/app/routes.tsx:22"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "src/app/routes\\.tsx",
+          "\\broutes\\b"
+        ]
+      }
+    },
+    {
+      "id": "Q02",
+      "category": "where",
+      "question": "Where is the debounce delay for the board's search box defined, and what is its value in milliseconds?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "SEARCH_DEBOUNCE_MS = 300 in src/features/board/use-board-filters.ts, applied through useDebouncedValue.",
+        "evidence": [
+          "src/features/board/use-board-filters.ts:120",
+          "src/features/board/use-board-filters.ts:203"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "use-board-filters\\.ts",
+          "\\b300\\b"
+        ]
+      }
+    },
+    {
+      "id": "Q03",
+      "category": "what",
+      "question": "What are the task statuses, in the order the board shows its columns?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "BACKLOG, TODO, IN_PROGRESS, DONE, CANCELLED (BOARD_STATUSES).",
+        "evidence": [
+          "src/features/board/task-types.ts:35-41"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "backlog[\\s\\S]*to[ _-]?do[\\s\\S]*in[ _-]?progress[\\s\\S]*done[\\s\\S]*cancell?ed"
+        ]
+      }
+    },
+    {
+      "id": "Q04",
+      "category": "what",
+      "question": "Which URL query-string parameter names does the board use for the point-estimate filter and for the due-date filter?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "`points` for pointEstimate and `due` for dueDate (FILTER_PARAMS).",
+        "evidence": [
+          "src/features/board/use-board-filters.ts:43-50"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "\\bpoints\\b",
+          "[`'\"=?]due\\b|\\bdue[`'\"=]"
+        ]
+      }
+    },
+    {
+      "id": "Q05",
+      "category": "config",
+      "question": "What minimum test coverage does the test configuration enforce?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "85% for statements, branches, functions and lines.",
+        "evidence": [
+          "vite.config.ts:285-290"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "\\b85\\b"
+        ]
+      }
+    },
+    {
+      "id": "Q06",
+      "category": "config",
+      "question": "Which npm script is the repository's quality bar that CI runs, and which scripts does it chain?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "`gate`: typecheck, lint, format:check, coverage.",
+        "evidence": [
+          "package.json:35",
+          ".github/workflows/ci.yml:80"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "\\bgate\\b",
+          "typecheck",
+          "\\blint\\b",
+          "format:check",
+          "coverage"
+        ]
+      }
+    },
+    {
+      "id": "Q07",
+      "category": "what",
+      "question": "What endpoint URL does the app send GraphQL requests to when no API is configured?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "https://mock.local/graphql (MOCK_API_URL), which MSW intercepts.",
+        "evidence": [
+          "src/lib/env.ts:146-148"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "mock\\.local/graphql"
+        ]
+      }
+    },
+    {
+      "id": "Q08",
+      "category": "how",
+      "question": "On the Vercel deployment, which URL does the browser post GraphQL requests to, and which environment variable holds the real API token on the server?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "Same-origin /api/graphql (VITE_API_URL set in vercel.json); the serverless proxy reads API_TOKEN (no VITE_ prefix).",
+        "evidence": [
+          "vercel.json:7",
+          "api/graphql.ts:187"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "/api/graphql",
+          "(?<!VITE_)\\bAPI_TOKEN\\b"
+        ]
+      }
+    },
+    {
+      "id": "Q09",
+      "category": "what",
+      "question": "How many GraphQL operations does the serverless proxy allow, and which HTTP status does it return for any other operation?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "Six fixed documents (Tasks, Users, Profile, CreateTask, UpdateTask, DeleteTask); anything else gets 400.",
+        "evidence": [
+          "api/graphql.ts:126-137",
+          "api/graphql.ts:245-252"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "\\b(6|six)\\b",
+          "\\b400\\b"
+        ]
+      }
+    },
+    {
+      "id": "Q10",
+      "category": "what",
+      "question": "What timeout does the proxy apply to its upstream request?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "TIMEOUT_MS = 10_000 (10 seconds), via AbortSignal.timeout; a timeout becomes a 504.",
+        "evidence": [
+          "api/graphql.ts:80",
+          "api/graphql.ts:272"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "10[_,]?000|\\b10\\s*(s\\b|sec|seconds)"
+        ]
+      }
+    },
+    {
+      "id": "Q11",
+      "category": "how",
+      "question": "Does the React Query client retry failed queries and failed mutations? State the rule for each and why.",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "Queries retry while failureCount < 2 (up to two retries), except an ApiError with isUnauthenticated, which is never retried because a rejected token stays rejected. Mutations never retry (retry: false) because a failed mutation may have applied server-side and a retry could create a duplicate task.",
+        "evidence": [
+          "src/app/query-client.ts:17-22",
+          "src/app/query-client.ts:29-32"
+        ]
+      },
+      "grading": {
+        "kind": "judge"
+      }
+    },
+    {
+      "id": "Q12",
+      "category": "how",
+      "question": "Trace what happens between typing in the board's search box and a request reaching the API.",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "The input stays controlled and the filter lives in the URL (`name` param) via useBoardFilters; the name is debounced with useDebouncedValue(SEARCH_DEBOUNCE_MS = 300); queryInput omits empty values; BoardPage passes queryInput to useTasks, whose query key includes the filters and whose queryFn calls request(TasksDocument, { input: filters }), a fetch POST to apiUrl.",
+        "evidence": [
+          "src/features/board/use-board-filters.ts:203-224",
+          "src/features/board/board-page.tsx:60-64",
+          "src/features/board/use-tasks.ts:44-50",
+          "src/graphql/client.ts:64-86"
+        ]
+      },
+      "grading": {
+        "kind": "judge"
+      }
+    },
+    {
+      "id": "Q13",
+      "category": "why",
+      "question": "Why is the MSW mocking runtime included in the production bundle?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "On purpose: the app must run with no configuration, including `npm run build && npm run preview` without a token. shouldStartMockWorker is a runtime check; guarding the import with import.meta.env.DEV would strip it and break that. When the env is configured the chunk is never fetched.",
+        "evidence": [
+          "src/main.tsx:15-34"
+        ]
+      },
+      "grading": {
+        "kind": "judge"
+      }
+    },
+    {
+      "id": "Q14",
+      "category": "why",
+      "question": "Why does the app use a hand-written fetch-based GraphQL client instead of a client library such as Apollo or urql?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "React Query already owns caching, deduplication and invalidation; a client with its own normalised cache would create a second source of truth. The needed surface is one typed function, and not shipping `graphql`'s print keeps it out of the bundle.",
+        "evidence": [
+          "src/graphql/client.ts:4-17",
+          "src/graphql/client.ts:80-85"
+        ]
+      },
+      "grading": {
+        "kind": "judge"
+      }
+    },
+    {
+      "id": "Q15",
+      "category": "how",
+      "question": "How does the app decide whether to use mock data, call the API directly, or go through the proxy?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "readApiConfig in src/lib/env.ts: no usable VITE_API_URL -> mock (undefined config, MSW); a same-origin path -> 'proxied' (token dropped); an absolute URL plus VITE_API_TOKEN -> 'direct'; an absolute URL without a token -> mock. Whitespace-only values count as missing.",
+        "evidence": [
+          "src/lib/env.ts:87-104"
+        ]
+      },
+      "grading": {
+        "kind": "judge"
+      }
+    },
+    {
+      "id": "Q16",
+      "category": "config",
+      "question": "Which command regenerates the GraphQL TypeScript types, and what are its inputs?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "npm run codegen (graphql-codegen), reading ./schema.graphql and the documents src/**/*.graphql.",
+        "evidence": [
+          "package.json:30",
+          "codegen.ts:12-13"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "codegen",
+          "schema\\.graphql",
+          "\\.graphql"
+        ]
+      }
+    },
+    {
+      "id": "Q17",
+      "category": "how",
+      "question": "What does deleting a task do to the board before the server responds, and what happens if the delete fails?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "Optimistic delete in useDeleteTask: onMutate cancels in-flight task queries, snapshots every task list with getQueriesData and removes the task from all of them; onError restores the snapshots (the board shows a toast); onSettled invalidates the task queries on both outcomes.",
+        "evidence": [
+          "src/features/board/use-delete-task.ts:52-77",
+          "src/features/board/use-delete-task.ts:78-93"
+        ]
+      },
+      "grading": {
+        "kind": "judge"
+      }
+    },
+    {
+      "id": "Q18",
+      "category": "stale",
+      "question": "Which version (git tag) of @ravn/ui-kit does the app depend on?",
+      "mapRef": "stale",
+      "reference": {
+        "answer": "v0.9.0 (github:f3r21/ravn-ui-kit#v0.9.0). It was v0.8.0 at the stale map's commit.",
+        "evidence": [
+          "package.json:44"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "v?0\\.9\\.0"
+        ]
+      }
+    },
+    {
+      "id": "Q19",
+      "category": "stale",
+      "question": "Where does the sidebar's \"My task\" item navigate, and which component does that route render?",
+      "mapRef": "stale",
+      "reference": {
+        "answer": "/my-task, which renders MyTaskPage inside AppLayout. At the stale map's commit it pointed at /settings (the profile page).",
+        "evidence": [
+          "src/features/navigation/app-sidebar.tsx:40",
+          "src/app/routes.tsx:42-48"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "/my-task",
+          "MyTaskPage"
+        ]
+      }
+    },
+    {
+      "id": "Q20",
+      "category": "stale",
+      "question": "In the list view, how is the colour of each row's indicator stripe chosen?",
+      "mapRef": "stale",
+      "reference": {
+        "answer": "toKitTableRowProps sets indicatorColor from the kit's statusToIndicatorColor(task.status); before kit v0.9.0 the kit defaulted every row to green.",
+        "evidence": [
+          "src/features/board/task-card/to-kit-props.ts:163-166"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "statusToIndicatorColor"
+        ]
+      }
+    },
+    {
+      "id": "Q21",
+      "category": "stale",
+      "question": "Does package.json override the version of any transitive dependency? If so, which package and version?",
+      "mapRef": "stale",
+      "reference": {
+        "answer": "Yes: overrides pins js-yaml to 4.3.2.",
+        "evidence": [
+          "package.json:86-88"
+        ]
+      },
+      "grading": {
+        "kind": "code",
+        "mustMatch": [
+          "js-yaml",
+          "4\\.3\\.2"
+        ]
+      }
+    },
+    {
+      "id": "Q22",
+      "category": "unanswerable",
+      "question": "Which database table stores tasks in this repository's backend?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "None: the repository has no backend database. Tasks live behind RAVN's external GraphQL API (UPSTREAM_URL, reached through the api/graphql.ts proxy); in mock mode an in-memory TaskStore stands in for it. A correct answer says the repository does not contain such a table rather than naming one.",
+        "evidence": [
+          "api/graphql.ts:58",
+          "src/mocks/task-store.ts:10-21"
+        ]
+      },
+      "grading": {
+        "kind": "judge"
+      }
+    },
+    {
+      "id": "Q23",
+      "category": "unanswerable",
+      "question": "Which Redux slices manage the board's state?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "None: the app does not use Redux. Server state is TanStack Query (useTasks and the mutation hooks) and the filters live in the URL via useBoardFilters. A correct answer says Redux is not used rather than naming slices.",
+        "evidence": [
+          "package.json:42-54",
+          "src/features/board/use-tasks.ts:44-50",
+          "src/features/board/use-board-filters.ts:43-50"
+        ]
+      },
+      "grading": {
+        "kind": "judge"
+      }
+    },
+    {
+      "id": "Q24",
+      "category": "why",
+      "question": "Why is the route table a plain array rather than a configured router, and why is the app shell not a parent layout route?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "A plain array lets tests mount the real table in a memory router and navigate for real, exercising route matching. The shell wraps each element instead of being a parent route with an Outlet so the not-found page is not rendered inside chrome that implies the app is fine.",
+        "evidence": [
+          "src/app/routes.tsx:11-21"
+        ]
+      },
+      "grading": {
+        "kind": "judge"
+      }
+    },
+    {
+      "id": "Q25",
+      "category": "how",
+      "question": "How does the board keep its filters shareable through the URL, and what does it do with a hand-edited, invalid query-string value such as ?status=nonsense?",
+      "mapRef": "ask",
+      "reference": {
+        "answer": "Filters are read from and written to URL search params through useBoardFilters, with the names in FILTER_PARAMS. Each raw value is narrowed to a union member (readMember) or a valid yyyy-MM-dd date (readDate); invalid values are dropped rather than sent to the API.",
+        "evidence": [
+          "src/features/board/use-board-filters.ts:43-50",
+          "src/features/board/use-board-filters.ts:73-75",
+          "src/features/board/use-board-filters.ts:85"
+        ]
+      },
+      "grading": {
+        "kind": "judge"
+      }
+    }
+  ]
+}

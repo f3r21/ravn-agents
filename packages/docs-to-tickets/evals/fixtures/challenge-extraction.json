@@ -1,0 +1,239 @@
+{
+  "tickets": [
+    {
+      "title": "Set up the folder structure, routing and styles solution",
+      "description": "Establish the project skeleton the brief asks for in the initial setup phase: a folder structure, routing configuration with optional NotFound and Error pages, and a styles solution.",
+      "acceptance_criteria": [
+        "The project has a documented folder structure.",
+        "Routing is configured, with a basic NotFound and Error page.",
+        "A styles solution is in place and used by the first page."
+      ],
+      "source_refs": ["initial-setup.1", "initial-setup.2", "initial-setup.3"],
+      "type": "chore",
+      "type_detail": null,
+      "priority": "required",
+      "labels": [],
+      "confidence": { "source_refs": "high", "type": "high", "priority": "high", "acceptance_criteria": "high" }
+    },
+    {
+      "title": "Add formatters, linters, an error boundary and GitHub Actions",
+      "description": "Add the optional quality tooling from the initial setup phase: formatters and linters, an error boundary, and GitHub Actions running the checks.",
+      "acceptance_criteria": [
+        "Formatters and linters run on the codebase.",
+        "An error boundary catches render errors.",
+        "GitHub Actions run the checks on every push."
+      ],
+      "source_refs": ["initial-setup.4", "initial-setup.5", "initial-setup.6"],
+      "type": "chore",
+      "type_detail": null,
+      "priority": "optional",
+      "labels": [],
+      "confidence": { "source_refs": "high", "type": "high", "priority": "high", "acceptance_criteria": "medium" }
+    },
+    {
+      "title": "Build the dashboard header with avatar, notification and search icons",
+      "description": "The dashboard header shows the profile avatar, the notification icon and the search icon. UI only, no behaviour yet.",
+      "acceptance_criteria": [
+        "The header shows the profile image (avatar).",
+        "The header shows the notification icon.",
+        "The header shows the search icon."
+      ],
+      "source_refs": ["header.1", "header.2", "header.3"],
+      "type": "feature",
+      "type_detail": null,
+      "priority": "required",
+      "labels": [],
+      "confidence": { "source_refs": "high", "type": "high", "priority": "high", "acceptance_criteria": "high" }
+    },
+    {
+      "title": "Build the sidebar with logo, navigation items and active state",
+      "description": "The sidebar shows the logo at the top and the menu navigation items, with an active state on the current item. Most items navigate to a placeholder page.",
+      "acceptance_criteria": [
+        "The logo is shown at the top of the sidebar.",
+        "The sidebar lists the menu navigation items, which navigate to placeholder pages.",
+        "The current item shows its active state."
+      ],
+      "source_refs": ["sidebar.1", "sidebar.2", "sidebar.3"],
+      "type": "feature",
+      "type_detail": null,
+      "priority": "required",
+      "labels": [],
+      "confidence": { "source_refs": "high", "type": "high", "priority": "high", "acceptance_criteria": "high" }
+    },
+    {
+      "title": "Add the view icons, plus icon and task columns to the main content",
+      "description": "The main content shows the list and grid view icons, the plus icon, and the five task columns: backlog, todo, in process, done, cancelled.",
+      "acceptance_criteria": [
+        "The list and grid view icons are shown without functionality.",
+        "The plus icon is shown.",
+        "The backlog, todo, in process, done and cancelled columns are shown."
+      ],
+      "source_refs": ["main-content.1", "main-content.2", "main-content.3"],
+      "type": "feature",
+      "type_detail": null,
+      "priority": "required",
+      "labels": [],
+      "confidence": { "source_refs": "high", "type": "high", "priority": "high", "acceptance_criteria": "high" }
+    },
+    {
+      "title": "Build the task card",
+      "description": "Each task card sits in the column that matches its status and shows the task's name, tags, due date, estimated points, user avatar and the options icon.",
+      "acceptance_criteria": [
+        "The card shows the task name.",
+        "The card shows the task tags.",
+        "The card shows the due date.",
+        "The card shows the estimated points.",
+        "The card shows the user avatar, with a placeholder image when none is provided.",
+        "The card shows the options icon (3 dots) in the top right corner."
+      ],
+      "source_refs": ["task-card.1", "task-card.2", "task-card.3", "task-card.4", "task-card.5", "task-card.6"],
+      "type": "feature",
+      "type_detail": null,
+      "priority": "required",
+      "labels": [],
+      "confidence": { "source_refs": "high", "type": "high", "priority": "high", "acceptance_criteria": "high" }
+    },
+    {
+      "title": "Load tasks into the board columns with the tasks query",
+      "description": "The board pulls all tasks with the tasks query and places each in its column, with loading, failure and empty states.",
+      "acceptance_criteria": [
+        "The tasks query fills the columns by status.",
+        "A loading indicator shows while fetching.",
+        "A failed query is indicated to the user.",
+        "An empty state shows when there are no results."
+      ],
+      "source_refs": ["get.1", "get.2", "get.3", "get.4"],
+      "type": "feature",
+      "type_detail": null,
+      "priority": "required",
+      "labels": [],
+      "confidence": { "source_refs": "high", "type": "high", "priority": "high", "acceptance_criteria": "high" }
+    },
+    {
+      "title": "Create a task from the plus icon modal",
+      "description": "Clicking the red plus icon opens a create task modal that adds the task with the createTask mutation and handles failures.",
+      "acceptance_criteria": [
+        "Clicking the red + icon opens the create task modal.",
+        "Submitting the modal runs the createTask mutation and the new task appears in the dashboard.",
+        "A failed createTask mutation shows an error."
+      ],
+      "source_refs": ["create.1", "create.2", "create.3"],
+      "type": "feature",
+      "type_detail": null,
+      "priority": "required",
+      "labels": [],
+      "confidence": { "source_refs": "high", "type": "high", "priority": "high", "acceptance_criteria": "high" }
+    },
+    {
+      "title": "Edit a task from the card options menu with updateTask",
+      "description": "The card's options menu opens a modal with every editable field; confirming runs the updateTask mutation and a notification reports the result.",
+      "acceptance_criteria": [
+        "The updateTask mutation saves the edited card information.",
+        "The modal edits due date, name, position, status, tags and estimated time.",
+        "The modal shows all the editable fields.",
+        "Confirm and cancel buttons confirm or cancel the edit.",
+        "A notification shows whether the request succeeded or failed."
+      ],
+      "source_refs": ["update.1", "update.2", "update.3", "update.4", "update.5"],
+      "type": "feature",
+      "type_detail": null,
+      "priority": "required",
+      "labels": [],
+      "confidence": { "source_refs": "high", "type": "high", "priority": "high", "acceptance_criteria": "medium" }
+    },
+    {
+      "title": "Delete a task from the card options menu with deleteTask",
+      "description": "The card's options menu deletes a task by id with the deleteTask mutation, after a confirmation, and reports the result.",
+      "acceptance_criteria": [
+        "The deleteTask mutation deletes the task by id.",
+        "A confirmation message with confirm and delete buttons shows before deleting.",
+        "A notification shows whether the request succeeded or failed."
+      ],
+      "source_refs": ["delete.1", "delete.2", "delete.3"],
+      "type": "feature",
+      "type_detail": null,
+      "priority": "required",
+      "labels": [],
+      "confidence": { "source_refs": "high", "type": "high", "priority": "high", "acceptance_criteria": "high" }
+    },
+    {
+      "title": "Filter tasks by name, due date, owner, status, tags and points",
+      "description": "Send the tasks query's optional filters in the request and show an empty results component when a filter combination returns nothing.",
+      "acceptance_criteria": [
+        "The request sends the name, due date, owner id, status, tags and estimated points filters when set.",
+        "An empty results component shows when the filters return no information."
+      ],
+      "source_refs": ["search-and-filter-tasks.1", "search-and-filter-tasks.2"],
+      "type": "feature",
+      "type_detail": null,
+      "priority": "required",
+      "labels": [],
+      "confidence": { "source_refs": "high", "type": "high", "priority": "high", "acceptance_criteria": "high" }
+    },
+    {
+      "title": "Show the user information on a settings route",
+      "description": "A new settings route shows the user's information from the profile query, in a design that matches the rest of the app.",
+      "acceptance_criteria": [
+        "The settings route shows full name, email, type, position, created at and updated at."
+      ],
+      "source_refs": ["show-the-user-information.1"],
+      "type": "feature",
+      "type_detail": null,
+      "priority": "required",
+      "labels": [],
+      "confidence": { "source_refs": "high", "type": "high", "priority": "high", "acceptance_criteria": "medium" }
+    },
+    {
+      "title": "Write the repository README",
+      "description": "The README covers setup and running instructions, a project description, screenshots, the rationale for decisions, the libraries used and any additional information.",
+      "acceptance_criteria": [
+        "The README has clear setup and running instructions.",
+        "The README has a project description.",
+        "The README has gifs or screenshots of the working application.",
+        "The README gives the rationale for the stack and project structure.",
+        "The README lists the technologies and libraries used."
+      ],
+      "source_refs": ["repository-readme.1", "repository-readme.2", "repository-readme.3", "repository-readme.4", "repository-readme.5", "repository-readme.6"],
+      "type": "docs",
+      "type_detail": null,
+      "priority": "required",
+      "labels": [],
+      "confidence": { "source_refs": "high", "type": "high", "priority": "high", "acceptance_criteria": "high" }
+    },
+    {
+      "title": "Show the task count per column and color due dates by delay",
+      "description": "Two bonus items: each column shows its total task count, and the due date turns green, yellow or red by how close or late it is.",
+      "acceptance_criteria": [
+        "Each column shows the total count of tasks.",
+        "The due date is green when on time, yellow with less than 2 days left, and red when older than the current date."
+      ],
+      "source_refs": ["bonus-points.2", "bonus-points.4"],
+      "type": "feature",
+      "type_detail": null,
+      "priority": "optional",
+      "labels": [],
+      "confidence": { "source_refs": "medium", "type": "high", "priority": "medium", "acceptance_criteria": "high" }
+    }
+  ],
+  "out_of_scope": [
+    { "ref": "code.1", "reason": "General code quality principle, applies to every ticket." },
+    { "ref": "code.2", "reason": "General code quality principle, applies to every ticket." },
+    { "ref": "design.1", "reason": "Design principle, applies to every UI ticket." },
+    { "ref": "design.2", "reason": "Design principle, applies to every UI ticket." },
+    { "ref": "design.3", "reason": "Design principle, applies to every UI ticket." },
+    { "ref": "design.4", "reason": "Design principle, applies to every UI ticket." },
+    { "ref": "design.5", "reason": "Link to the design system, not work." },
+    { "ref": "design.6", "reason": "Link to the style guide, not work." },
+    { "ref": "design.7", "reason": "Link to the mockups, not work." },
+    { "ref": "submission-steps.1", "reason": "Submission step, not development work." },
+    { "ref": "submission-steps.2", "reason": "Working practice, not development work." },
+    { "ref": "goal-of-this-challenge.1", "reason": "Evaluation criterion, not work." },
+    { "ref": "goal-of-this-challenge.2", "reason": "Evaluation criterion, not work." },
+    { "ref": "goal-of-this-challenge.3", "reason": "Evaluation criterion, not work." },
+    { "ref": "goal-of-this-challenge.4", "reason": "Evaluation criterion, not work." },
+    { "ref": "backend-api.1", "reason": "Endpoint reference used by the API tickets." },
+    { "ref": "bonus-points.1", "reason": "Bonus item not picked for this batch." },
+    { "ref": "bonus-points.3", "reason": "Bonus item not picked for this batch." },
+    { "ref": "bonus-points.5", "reason": "Bonus item not picked for this batch." }
+  ]
+}

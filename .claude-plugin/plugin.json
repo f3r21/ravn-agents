@@ -1,0 +1,37 @@
+{
+  "name": "ravn-agents",
+  "version": "0.1.0",
+  "description": "PR reviewer, codebase onboarding and docs-to-tickets for RAVN engineers",
+  "author": { "name": "RAVN" },
+  "skills": [
+    "./packages/pr-review/skills/",
+    "./packages/onboarding/skills/",
+    "./packages/docs-to-tickets/skills/"
+  ],
+  "agents": [
+    "./packages/pr-review/agents/pr-coordinator.md",
+    "./packages/pr-review/agents/pr-finder-correctness.md",
+    "./packages/pr-review/agents/pr-finder-security.md",
+    "./packages/pr-review/agents/pr-finder-tests.md",
+    "./packages/pr-review/agents/pr-finder-conventions.md",
+    "./packages/pr-review/agents/pr-verifier.md",
+    "./packages/onboarding/agents/area-mapper.md",
+    "./packages/docs-to-tickets/agents/ticket-extractor.md"
+  ],
+  "hooks": ["./packages/onboarding/hooks/hooks.json"],
+  "mcpServers": {
+    "tickets": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/packages/docs-to-tickets/dist/server.js"],
+      "env": { "GITHUB_TOKEN": "${user_config.github_token}" }
+    }
+  },
+  "userConfig": {
+    "github_token": {
+      "type": "string",
+      "title": "GitHub token",
+      "description": "Token with issues:write on the target repository",
+      "sensitive": true
+    }
+  }
+}

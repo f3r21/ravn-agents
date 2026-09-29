@@ -1,0 +1,6 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "rootDir": "src", "noEmit": true, "types": ["node"] },
+  "include": ["src"],
+  "references": [{ "path": "../eval-core" }]
+}

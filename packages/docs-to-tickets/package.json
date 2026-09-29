@@ -1,0 +1,22 @@
+{
+  "name": "@ravn-agents/docs-to-tickets",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "ravn-tickets": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "npm run build:server && npm run build:cli",
+    "build:server": "esbuild src/server.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/server.js",
+    "build:cli": "esbuild src/cli.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/cli.js",
+    "eval": "node evals/run.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.128.0",
+    "@modelcontextprotocol/server": "^2.1.0",
+    "@ravn-agents/eval-core": "0.1.0",
+    "ajv": "^8.17.0",
+    "zod": "^4.6.5"
+  }
+}
