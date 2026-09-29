@@ -23,6 +23,8 @@ engineering work. The repo root is both the plugin root and the marketplace root
   `fix/<topic>`; the other contributor reviews and merges.
 - Commit subjects follow Conventional Commits, scoped by package: `fix(pr-review): ...`.
 - A PR that changes `src/` also rebuilds and commits that package's `dist/`.
+- CI (`.github/workflows/ci.yml`) must pass before merge: stale `dist/`, typecheck, tests and
+  `claude plugin validate .`.
 
 ## Rules
 
