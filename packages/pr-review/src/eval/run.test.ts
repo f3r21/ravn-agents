@@ -32,7 +32,7 @@ describe("runVariant", () => {
     let spawned = false;
     const res = await runVariant(item, "coordinator", {
       pluginDir: "/", clones: {}, outDir: "/tmp/pr-review-run-test", budgetUsdPerItem: 1, timeoutMinutes: 1,
-      mainModel: "claude-opus-5-5", sonnetSubagentModel: "claude-sonnet-5",
+      mainModel: "claude-opus-5-5", sonnetSubagentModel: "claude-sonnet-5-5",
       proc: async () => ((spawned = true), { code: 0, stdout: "", stderr: "" }),
     });
     expect(res).toMatchObject({ ok: false, failure: "run-failed" });

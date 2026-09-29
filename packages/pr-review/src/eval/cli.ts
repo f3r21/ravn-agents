@@ -29,7 +29,7 @@ const ITEMS = join(PKG, "evals/items.json");
 const RUBRIC = join(PKG, "evals/rubric.md");
 const MAIN_MODEL = "claude-opus-5-5";
 const FINDER_MODEL = "claude-opus-5-5";
-const SONNET_MODEL = "claude-sonnet-5";
+const SONNET_MODEL = "claude-sonnet-5-5";
 const DEFAULT_JUDGE = "claude-opus-5-5";
 
 function flag(args: string[], name: string, fallback?: string): string | undefined {

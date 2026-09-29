@@ -31,6 +31,8 @@ engineering work. The repo root is both the plugin root and the marketplace root
   `npm install`, anything that posts to GitHub or creates issues, and full paid eval runs. Agents
   may run `npm test`, `npm run typecheck` and read-only `git`/`gh`. When a dependency is missing,
   name the exact `npm install -w <pkg> <dep>` command and stop.
+- Exception, cloud sessions (Claude Code on the web): they may commit, push `claude/*` branches and
+  open pull requests. They never merge, never run evals and never create issues (decision 27).
 - Outward-facing actions default to dry-run: the PR reviewer prints instead of posting, the MCP
   server refuses to create issues unless explicitly enabled.
 - Pin models by full ID: `claude-opus-5-5` everywhere (decision 22). No forced `tool_choice`.

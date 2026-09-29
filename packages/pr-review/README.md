@@ -7,7 +7,7 @@ single summary comment. It never approves or requests changes.
 ```
 /ravn-agents:review-pr https://github.com/f3r21/ravn-ui-kit/pull/145
 /ravn-agents:review-pr f3r21/ravn-ui-kit#145 --post
-/ravn-agents:review-pr 145 --all-finders --subagent-model claude-sonnet-5
+/ravn-agents:review-pr 145 --all-finders --subagent-model claude-sonnet-5-5
 ```
 
 ## How it works
@@ -83,8 +83,8 @@ Numbers refer to the [CCAF concept index](../../docs/research/foundation-plugin-
 reviewer flags inline. Clean control PRs give the noise side (`inline_precision`,
 `inline_findings_per_clean_pr`). Baselines on the same items: a single-prompt review, and the
 coordinator's routing against running all finders. Every agent runs on Opus 5.5 by default; for
-cost, the `coordinator-sonnet-subagents` variant reruns the same items with Sonnet 5 finders and
-verifier (`--subagent-model claude-sonnet-5`).
+cost, the `coordinator-sonnet-subagents` variant reruns the same items with Sonnet 5.5 finders and
+verifier (`--subagent-model claude-sonnet-5-5`).
 
 - Items: [`evals/items.json`](evals/items.json), frozen 2026-09-27. Candidates were mined with SZZ
   (`npm run eval -w packages/pr-review -- mine`) and from issues that describe a defect in lines a
