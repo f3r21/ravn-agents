@@ -1,3 +1,6 @@
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { parseDiff } from "../diff.ts";
 import { route } from "../policy.ts";
@@ -37,6 +40,27 @@ describe("runVariant", () => {
     });
     expect(res).toMatchObject({ ok: false, failure: "run-failed" });
     expect(spawned).toBe(false);
+  });
+
+  it("runs the coordinator headless, isolated from user settings, with the allow list and run dir", async () => {
+    const item = { id: "x#1", repo: "o/x", pr: 1, kind: "bug", headSha: "a", defects: [] } as unknown as Item;
+    const calls: { cmd: string; args: string[] }[] = [];
+    const outDir = mkdtempSync(join(tmpdir(), "pr-review-run-test-"));
+    await runVariant(item, "coordinator", {
+      pluginDir: "/labs", clones: { "o/x": "/clone" }, outDir, budgetUsdPerItem: 5, timeoutMinutes: 1,
+      mainModel: "claude-opus-5-5", sonnetSubagentModel: "claude-sonnet-5-5",
+      proc: async (cmd, args) => (calls.push({ cmd, args }), { code: 0, stdout: "{}", stderr: "" }),
+    });
+    const runDir = join(outDir, "x_1", "coordinator-run");
+    expect(calls.find((c) => c.cmd === "claude")!.args).toEqual([
+      "-p", `/ravn-agents:review-pr o/x#1 --run-dir ${runDir}`,
+      "--plugin-dir", "/labs",
+      "--model", "claude-opus-5-5",
+      "--add-dir", runDir,
+      "--allowedTools", "Bash(node */packages/pr-review/dist/cli.js *) Read Write Grep Glob Agent",
+      "--output-format", "json", "--max-budget-usd", "5", "--no-session-persistence",
+      "--setting-sources", "local", "--strict-mcp-config", "--permission-mode", "default",
+    ]);
   });
 });
 

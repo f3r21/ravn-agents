@@ -50,6 +50,11 @@ describe("buildReport", () => {
     expect(r.notes).toMatch(/unconfirmed SZZ candidates/);
   });
 
+  it("labels items salvaged from transcripts, and says nothing when none were", () => {
+    expect(buildReport(input({ salvaged: 3 })).notes).toMatch(/3 items were salvaged from transcripts after a harness permission failure.*agent's own finalize step did not run/);
+    expect(buildReport(input()).notes).not.toMatch(/salvaged/);
+  });
+
   it("refuses to report without graded bug items", () => {
     expect(() => buildReport(input({ grades: { coordinator: [grade("c1", "clean", false, "coordinator")] } }))).toThrow(/no bug items/);
   });

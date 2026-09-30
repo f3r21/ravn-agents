@@ -28,7 +28,7 @@ export function claudeJudge(opts: { model: string; rubricPath: string; cache: Ma
     const hit = opts.cache.get(key);
     if (hit) return { match: hit.match, reason: hit.reason };
     const prompt = judgePrompt(rubric, defect.description, `${defect.path}:${defect.startLine}-${defect.endLine}`, `${f.path}:${f.line} [${f.severity}] ${f.title}\n${f.body}`);
-    const res = await proc("claude", ["-p", "--model", opts.model, "--tools", "", "--json-schema", JSON.stringify(SCHEMA), "--output-format", "json", "--no-session-persistence"], {
+    const res = await proc("claude", ["-p", "--model", opts.model, "--tools", "", "--json-schema", JSON.stringify(SCHEMA), "--output-format", "json", "--no-session-persistence", "--setting-sources", "local", "--strict-mcp-config"], {
       input: prompt,
       timeoutMs: 180_000,
     });
