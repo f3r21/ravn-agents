@@ -6,7 +6,7 @@
   "description": "Codebase map builder, map-routed Q&A and a staleness hook for Claude Code",
   "scripts": {
     "build": "npm run build:cli && npm run build:hook",
-    "build:cli": "esbuild src/cli.ts --bundle --platform=node --format=esm --target=node20 --outfile=dist/map-cli.js",
+    "build:cli": "esbuild src/map-cli.ts --bundle --platform=node --format=esm --target=node20 --outfile=dist/map-cli.js",
     "build:hook": "esbuild src/hook.ts --bundle --platform=node --format=esm --target=node20 --outfile=dist/check-map-staleness.js",
     "eval": "esbuild src/eval/run.ts --bundle --platform=node --format=esm --target=node20 --external:@ravn-agents/eval-core --outfile=evals/.bin/run.js && node evals/.bin/run.js"
   },

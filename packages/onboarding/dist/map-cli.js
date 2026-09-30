@@ -939,7 +939,7 @@ function run(argv) {
         process.stdout.write(`${formatReport(report)}
 `);
       }
-      return report === void 0 || isFresh(report) ? 0 : 1;
+      return 0;
     }
     case "validate": {
       const problems = validateMap(root);
@@ -951,6 +951,8 @@ function run(argv) {
 ${USAGE}`);
   }
 }
+
+// src/map-cli.ts
 try {
   process.exitCode = run(process.argv.slice(2));
 } catch (error) {

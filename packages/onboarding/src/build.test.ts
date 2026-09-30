@@ -2,8 +2,9 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MAP_DIR, MapError, assemble, mapStatus, plan, validateMap } from "./build.js";
+import { run } from "./cli.js";
 import { readAreaMeta } from "./page.js";
 import { sessionStartOutput } from "./session-start.js";
 import { isFresh } from "./staleness.js";
@@ -174,6 +175,20 @@ describe("staleness and refresh", () => {
     const refresh = plan(repo, { refresh: true });
     expect(refresh.toMap).toEqual([]);
     expect(refresh.remove).toEqual([]);
+  });
+
+  it("status exits 0 on a stale map: stale is a report, not a failure", () => {
+    buildMap();
+    commit("add map");
+    put("web/app.ts", "changed\n");
+    commit("change web");
+    const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    try {
+      expect(run(["status", "--repo", repo])).toBe(0);
+      expect(write.mock.calls.join("")).toContain("stale");
+    } finally {
+      write.mockRestore();
+    }
   });
 });
 
