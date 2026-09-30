@@ -1,6 +1,6 @@
 import { MapError, assemble, mapStatus, plan, validateMap } from "./build.js";
 import { findRepoRoot } from "./git.js";
-import { formatReport, isFresh } from "./staleness.js";
+import { formatReport } from "./staleness.js";
 
 const USAGE = `usage: map-cli <command> [--repo <dir>]
 
@@ -41,7 +41,7 @@ function print(value: unknown): void {
   process.stdout.write(`${JSON.stringify(value, null, 2)}\n`);
 }
 
-function run(argv: string[]): number {
+export function run(argv: string[]): number {
   const args = parseArgs(argv);
   if (args.command === undefined || args.flags.has("--help")) {
     process.stdout.write(`${USAGE}\n`);
@@ -87,7 +87,9 @@ function run(argv: string[]): number {
       } else {
         process.stdout.write(`${formatReport(report)}\n`);
       }
-      return report === undefined || isFresh(report) ? 0 : 1;
+      // Stale is a report, not a failure. The ask-codebase skill injects this output, and Claude
+      // Code refuses to load a skill whose injected command exits non-zero.
+      return 0;
     }
     case "validate": {
       const problems = validateMap(root);
@@ -96,16 +98,5 @@ function run(argv: string[]): number {
     }
     default:
       throw new MapError(`unknown command "${args.command}"\n${USAGE}`);
-  }
-}
-
-try {
-  process.exitCode = run(process.argv.slice(2));
-} catch (error) {
-  if (error instanceof MapError) {
-    process.stderr.write(`map-cli: ${error.message}\n`);
-    process.exitCode = 2;
-  } else {
-    throw error;
   }
 }

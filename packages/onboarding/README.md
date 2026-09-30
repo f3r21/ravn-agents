@@ -65,7 +65,7 @@ these areas, run /ravn-agents:onboard --refresh.
 The CLI is usable on its own (it is what the skills call):
 
 ```bash
-node packages/onboarding/dist/map-cli.js status     # staleness vs HEAD; exit 1 when stale
+node packages/onboarding/dist/map-cli.js status     # staleness vs HEAD; exit 0 whether fresh or stale
 node packages/onboarding/dist/map-cli.js validate   # re-check every citation (for CI)
 node packages/onboarding/dist/map-cli.js plan [--refresh] | assemble
 ```
