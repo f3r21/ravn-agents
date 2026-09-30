@@ -7,6 +7,9 @@
  *          [--limit N] [--only id,id] [--include-unconfirmed] [--budget-usd 5] [--out dir]
  *          Replays items headless. Costs money: a full run is a human decision.
  *   grade  --run <dir> [--judge-model claude-opus-5-5]
+ *   salvage --run <dir>
+ *          Recovers coordinator runs whose draft.json Write was denied: takes the draft from the
+ *          transcript's permission_denials and finalizes it offline. Free and idempotent.
  *   report --run <dir> [--human-labels file]
  *          Writes <run>/report.json, validated against schemas/eval-report.schema.json.
  */
@@ -22,6 +25,7 @@ import { claudeJudge } from "./judge.ts";
 import { Miner, fixCandidates, listMerged } from "./mine.ts";
 import { buildReport } from "./report.ts";
 import { runVariant } from "./run.ts";
+import { salvageRun } from "./salvage.ts";
 
 const PKG = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const LABS = resolve(PKG, "../..");
@@ -138,6 +142,13 @@ async function grade(args: string[]): Promise<void> {
   process.stderr.write(`graded ${grades.length} item-variant results; ${cache.size} judge decisions in ${cachePath}\n`);
 }
 
+function salvage(args: string[]): void {
+  const runDir = resolve(flag(args, "--run") ?? "");
+  const lines = salvageRun(runDir);
+  for (const l of lines) process.stderr.write(`${l.item} ${l.outcome}: ${l.detail}\n`);
+  process.stderr.write(`salvaged ${lines.filter((l) => l.outcome === "salvaged").length} of ${lines.length} items\n`);
+}
+
 function report(args: string[]): void {
   const runDir = resolve(flag(args, "--run") ?? "");
   const { judgeModel, grades } = JSON.parse(readFileSync(join(runDir, "grades.json"), "utf8")) as { judgeModel: string; grades: ItemGrade[] };
@@ -168,6 +179,7 @@ function report(args: string[]): void {
       outputTokens: main.reduce((n, r) => n + (r.outputTokens ?? 0), 0),
       wallSeconds: main.reduce((n, r) => n + r.wallSeconds, 0),
     },
+    salvaged: new Set(results.filter((r) => r.salvaged).map((r) => r.itemId)).size,
     partial: items.length < all.filter((i) => i.confirmed).length || items.some((i) => !i.confirmed),
     pluginVersion: pkg.version,
     models: {
@@ -189,10 +201,10 @@ function report(args: string[]): void {
 }
 
 const [cmd, ...rest] = process.argv.slice(2);
-const commands: Record<string, (a: string[]) => unknown> = { mine, run, grade, report };
+const commands: Record<string, (a: string[]) => unknown> = { mine, run, grade, salvage, report };
 const fn = cmd ? commands[cmd] : undefined;
 if (!fn) {
-  process.stderr.write("usage: eval <mine|run|grade|report> [flags]; see the header of src/eval/cli.ts\n");
+  process.stderr.write("usage: eval <mine|run|grade|salvage|report> [flags]; see the header of src/eval/cli.ts\n");
   process.exit(2);
 }
 Promise.resolve(fn(rest)).catch((err: unknown) => {

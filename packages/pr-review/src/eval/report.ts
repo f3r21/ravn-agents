@@ -15,6 +15,8 @@ export interface ReportInput {
   humanAgreement: { n: number; agreement: number } | null;
   cost: { usd: number; inputTokens: number; outputTokens: number; wallSeconds: number };
   partial: boolean;
+  /** Items whose result was recovered by `salvage` rather than produced end to end. */
+  salvaged?: number;
   pluginVersion: string;
   models: { main: string; subagents: Record<string, string>; effort?: string };
 }
@@ -92,6 +94,9 @@ export function buildReport(input: ReportInput): Record<string, unknown> {
 
   const unconfirmed = input.items.filter((i) => !i.confirmed).length;
   if (unconfirmed) notes.push(`${unconfirmed} of ${input.items.length} items are unconfirmed SZZ candidates; do not quote this number until they are confirmed by hand.`);
+  if (input.salvaged) {
+    notes.push(`${input.salvaged} items were salvaged from transcripts after a harness permission failure: their drafts were recovered from denied writes and finalized offline, so the agent's own finalize step did not run.`);
+  }
   if (agg.runFailures) notes.push(`${agg.runFailures} item runs failed and count as misses.`);
 
   const failures = main

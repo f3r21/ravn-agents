@@ -15,6 +15,15 @@ to everyday RAVN engineering work, each shipped with a live demo and one measure
   tool.
 - **Failure mode** — a documented way a tool can go wrong, with the behaviour chosen for it
   (retry, escalate to a human, or refuse).
+- **Inline comment** — a PR reviewer finding posted on a diff line as its own review thread.
+- **Summary comment** — the single PR reviewer comment that lists every other verified finding
+  and the candidates the verifier rejected, with its reason.
+- **Inline recall** — share of bug items whose defect the PR reviewer flagged in an inline
+  comment. The PR reviewer's headline number.
+- **Caught-anywhere recall** — share of bug items whose defect appears in an inline comment or
+  the summary comment.
+- **Rescued run** — an eval run whose agent output was recovered from transcripts after a harness
+  failure, rather than produced end to end. Published only with that label.
 
 ## Decisions
 
@@ -47,6 +56,8 @@ to everyday RAVN engineering work, each shipped with a live demo and one measure
 | 25 | Docs → tickets has two extraction paths: in Claude Code the `ticket-extractor` subagent with ajv validation in code; in the eval the Messages API with structured outputs, sharing prompt, examples, schema and model. Accepted as is; the README states that the eval number measures the API path. | 2026-09-26 |
 | 26 | PR reviewer eval scope for the first published number: the `coordinator` variant on the 16 hand-confirmed items (8 bug, 8 clean). The `all-finders` comparison from decision 8, the `single-prompt` baseline, the Sonnet 5.5 variant and variance reruns are deferred and reported as limitations. | 2026-09-29 |
 | 27 | Cloud sessions (Claude Code on the web) do development work only: they push `claude/*` branches and open pull requests; a human reviews and merges. Evals never run in a cloud session, which ignores `ANTHROPIC_API_KEY`; they run locally. Cloud spend starts with one pilot ticket to measure real cost, is capped per session, and stops for re-planning at half the credit. | 2026-09-29 |
+| 28 | PR reviewer headline number: **inline recall** (k/n, Wilson 95%), with **caught-anywhere recall** beside it. Measured at the default inline threshold. | 2026-09-29 |
+| 30 | The first published PR reviewer number comes from a **rescued run** (2026-09-29, 16 items, measured at `68327be`: the headless coordinator was denied its draft write). A full end-to-end re-run follows the pitch and replaces it. | 2026-09-29 |
 
 ## Platform constraints
 

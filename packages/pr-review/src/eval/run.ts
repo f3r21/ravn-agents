@@ -1,7 +1,8 @@
 /**
  * Replays items through each variant (research doc 3.5, step 5): check out the PR's head commit,
  * prepare the run directory, run the reviewer headless, and store the routed findings. Nothing is
- * posted: the skill runs in its default dry-run mode.
+ * posted: the skill runs in its default dry-run mode. Every headless call ignores user settings and
+ * MCP config, because eval results must not depend on the maintainer's settings.
  */
 
 import { spawn } from "node:child_process";
@@ -151,7 +152,10 @@ export async function runVariant(item: Item, variant: Variant, opts: RunOptions)
     return fail("run-failed", (e as Error).message);
   }
 
-  const common = ["--output-format", "json", "--max-budget-usd", String(opts.budgetUsdPerItem), "--no-session-persistence"];
+  const common = [
+    "--output-format", "json", "--max-budget-usd", String(opts.budgetUsdPerItem), "--no-session-persistence",
+    "--setting-sources", "local", "--strict-mcp-config", "--permission-mode", "default",
+  ];
   const timeoutMs = opts.timeoutMinutes * 60_000;
 
   if (variant === "single-prompt") {

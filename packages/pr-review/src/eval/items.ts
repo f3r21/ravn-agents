@@ -71,4 +71,6 @@ export interface VariantResult {
   outputTokens: number | null;
   wallSeconds: number;
   transcript: string | null;
+  /** Set by `salvage`: the draft was recovered from a denied Write in the transcript and finalized offline. */
+  salvaged?: boolean;
 }

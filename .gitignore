@@ -7,3 +7,4 @@ packages/*/evals/results/
 # Local Claude Code state
 .claude/worktrees/
 .claude/settings.local.json
+.scratch/
