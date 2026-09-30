@@ -4,9 +4,9 @@ title: "src/features"
 paths: ["src/features/"]
 tree_hash: "a28738be0b5fc39e2425bff3be8702b3cac831a3"
 built_at_sha: "ac7cb47c1e590616da040840cb26cb4e203d99f8"
-built_at: "2026-09-26T21:58:14.483Z"
+built_at: "2026-09-30T05:28:33.367Z"
 status: "ok"
-summary: "`src/features` holds the app's three domain areas — `board`, `navigation`, `profile` — each a self-contained slice of hooks, mappers and components with no c..."
+summary: "`src/features` holds the app's three feature slices."
 generator: "ravn-agents/onboarding 0.1.0"
 ---
 
@@ -15,78 +15,37 @@ generator: "ravn-agents/onboarding 0.1.0"
 > Codebase map page, built at `ac7cb47c1e59`. It says where to look; confirm every claim against the cited code before relying on it.
 
 ## Summary
-`src/features` holds the app's three domain areas — `board`, `navigation`, `profile` — each a
-self-contained slice of hooks, mappers and components with no cross-feature imports allowed
-(enforced by a lint rule per `src/features/board/task-types.ts:10`). `board` is by far the
-largest: it owns the task list, its filters, and the create/edit/delete flow, consumed both by
-`BoardPage` and by `MyTaskPage` in `src/app/`. `src/features/board/board-page.tsx:44`
+`src/features` holds the app's three feature slices. `board/` is the task board: GraphQL queries and mutations through React Query, URL-backed filters, create/edit/delete dialogs, and the grid and list views. `navigation/` is the app shell's header and sidebar. `profile/` is the settings page. Routes and pages in `src/app` consume them (`src/app/routes.tsx:2-4`, `src/app/my-task-page.tsx:1-10`). Features must not import each other; `eslint.config.js` allows only two edges out of `navigation/` (`eslint.config.js:364-376`).
 
 ## Key files
-- `src/features/board/board-page.tsx:44` — the dashboard route: wires `useTasks`,
-  `useUsers`, `useBoardFilters` and `useBoardDialogs` into the toolbar, filter bar, three
-  dialogs and the async board/list/empty states.
-- `src/features/board/board.tsx:93` — groups tasks by status (`groupByStatus`,
-  `src/features/board/board.tsx:22`) and switches between the grid columns and
-  `BoardListTable` based on `view`.
-- `src/features/board/use-tasks.ts:13` — `taskKeys`, the single query-key namespace every
-  mutation invalidates, and `useTasks` (`src/features/board/use-tasks.ts:44`), which keeps
-  previous results on screen via `placeholderData: keepPreviousData`.
-- `src/features/board/use-board-actions.ts:40` — the three mutations' UI contract: create/edit
-  reject (so `TaskFormDialog` can show an inline error and stay open) while `remove` returns a
-  `ConfirmOutcome` instead.
-- `src/features/board/use-delete-task.ts:44` — the one optimistic mutation; it removes the task
-  from every cached filter permutation in `onMutate` and rolls back per-query snapshots in
-  `onError`.
-- `src/features/board/use-board-filters.ts:151` — reads/writes all board filters as URL search
-  params (`FILTER_PARAMS`, `src/features/board/use-board-filters.ts:43`), so the header search
-  box and the filter bar share state through the URL rather than each other.
-- `src/features/board/use-board-dialogs.ts:71` — one discriminated union (`BoardDialog`,
-  `src/features/board/use-board-dialogs.ts:25`) is the source of truth for which of
-  create/edit/delete is open, driving three derived `OverlayTriggerState`s for the kit's `Modal`.
-- `src/features/board/task-mapping.ts:117` — `toCreateInput`/`toUpdateInput`/`toFormFields`
-  convert between the form's fields and the GraphQL input types; `toUpdateInput` sends only the
-  fields that changed from `toFormFields(task)`.
-- `src/features/board/task-card/to-kit-props.ts:64` — `taskPresentation` computes the seven
-  fields both the card and the list-row kit components need, then `toKitCardProps`
-  (`src/features/board/task-card/to-kit-props.ts:102`) and `toKitTableRowProps`
-  (`src/features/board/task-card/to-kit-props.ts:152`) just rename them per component.
-- `src/features/navigation/app-header.tsx:52` — the top bar; wires the URL-backed search to
-  `useBoardFilters` when on the board route and navigates to `/` with a `?name=` otherwise.
-- `src/features/profile/use-profile.ts:18` — `useProfile`, shared under `profileKeys.current`
-  by both `AppHeader`'s avatar and the settings page so they can't disagree about who is signed in.
+- `src/features/board/board-page.tsx:44` — `BoardPage`, the dashboard route. Start here: it wires users, filters, tasks, dialogs and actions together and holds no logic of its own.
+- `src/features/board/use-tasks.ts:13-53` — `taskKeys` and `useTasks`, the filtered task query. Every mutation invalidates this key prefix.
+- `src/features/board/use-board-filters.ts:151` — `useBoardFilters`: filters stored in URL search params, validation of hand-edited values, and the debounced `queryInput`.
+- `src/features/board/use-board-actions.ts:40` — `create`/`edit`/`remove`: which mutation runs and which toast is shown.
+- `src/features/board/task-mapping.ts:46-148` — form fields to `CreateTaskInput`/`UpdateTaskInput` (the update is a patch), plus `toFormFields`.
+- `src/features/board/use-board-dialogs.ts:25-29` — the `BoardDialog` union (`none|create|edit|delete`) that controls every dialog.
+- `src/features/board/task-form-dialog.tsx:85` — the create/edit modal. Its reducer and validation are in `task-form-state.ts`.
+- `src/features/board/task-card/to-kit-props.ts:47` — `KIT_FIELD_NAMES`, `toKitCardProps` and `toKitTableRowProps`, which map a `Task` to `@ravn/ui-kit` card and row props.
+- `src/features/board/task-types.ts:35-53` — display orders `BOARD_STATUSES`, `ALL_TAGS` and `ALL_POINT_ESTIMATES`. The domain types themselves live in `@/graphql/domain`.
+- `src/features/navigation/app-header.tsx:52` / `src/features/navigation/app-sidebar.tsx:38` — `AppHeader` (search box and avatar link) and `NAV_ITEMS`. `routes.tsx` builds routes from `NAV_ITEMS`.
 
 ## How it works
-- `BoardPage` treats a `pending` and an `error` `useUsers()` status differently from a plain
-  `data === undefined` check, because both leave `data` undefined but only the failed case
-  should permanently disable owner filtering. `src/features/board/board-page.tsx:56-63`
-  `src/features/board/use-board-filters.ts:109-118`
-- Deleting a task is the only optimistic mutation; create and update instead seed the cache
-  from the server response, because the server decides the id/position/creator on create and
-  the resolved patch on update. `src/features/board/use-delete-task.ts:25-42`
-- `useBoardActions.remove` never rejects — it reports failure through a toast and returns
-  `'keep-open'` — because `DeleteTaskDialog` has no place for an inline error, unlike
-  `create`/`edit` which rethrow so the form dialog can render one.
-  `src/features/board/use-board-actions.ts:80-92` `src/features/board/delete-task-dialog.tsx:66-80`
-- `MyTaskPage` (outside this area, in `src/app/`) filters by `assigneeId`, not `ownerId`,
-  reusing `useTasks`, `useBoardDialogs`, `useBoardActions` and `Board` directly rather than
-  routing through `BoardPage`. `src/app/my-task-page.tsx:37-47`
-- `Board`'s grid wrapper class `GRID_WRAPPER` is exported specifically so `board-skeleton.tsx`
-  can reuse the identical string, keeping the loading layout from drifting from the loaded one.
-  `src/features/board/board.tsx:82-91`
+- Data path: `useUsers` supplies the owner ids and a directory status to `useBoardFilters`. That hook builds `queryInput`, which goes to `useTasks`. `Board` then groups the tasks by status and sorts each column by `position`. `src/features/board/board-page.tsx:56-64` `src/features/board/board.tsx:22-43`
+- Filters live in the URL under the `FILTER_PARAMS` keys (the points filter is stored as `points`, the owner as `owner`, the due date as `due`). Every write uses `replace: true`. Only the name is debounced, by 300 ms, and empty values are left out of `queryInput` so that `{}` and `{name:''}` share one cache key. `src/features/board/use-board-filters.ts:43-50` `src/features/board/use-board-filters.ts:172-229`
+- `useTasks` uses `placeholderData: keepPreviousData`, so the previous results stay on screen while a filter change loads. Only the first load shows the skeleton. `src/features/board/use-tasks.ts:44-53`
+- Create and update write the server's response into every `taskKeys.all` list, then start an invalidation without awaiting it. Delete is the only optimistic mutation: it cancels queries, snapshots every list, removes the task, and rolls back in `onError`. `src/features/board/use-create-task.ts:43-58` `src/features/board/use-delete-task.ts:52-107`
+- The actions report failure in two different ways. `create` and `edit` show an error toast and rethrow, so `TaskFormDialog` stays open and shows the message inline. `remove` returns `'keep-open'` or `'close'` instead of throwing. `src/features/board/use-board-actions.ts:46-92` `src/features/board/task-form-dialog.tsx:135-144`
+- Dialogs are mounted only while their `dialog.kind` is active, so every open starts with a fresh form. The edit form is seeded from `toFormFields(dialog.task)`. `src/features/board/board-page.tsx:112-142`
+- The header search writes `?name=` through the board's own `setFilter`. Off the board route it navigates to `/?name=` instead. `src/features/navigation/app-header.tsx:56-86`
 
 ## Gotchas
-- The `toApiDateTime` calendar-day-to-`DateTime` rule is not centralized: `use-board-filters.ts`
-  assembles the same `T00:00:00.000Z` suffix inline rather than importing the helper, so a
-  change to how a calendar day is sent has to be made in both places.
-  `src/features/board/task-mapping.ts:27-32` `src/features/board/use-board-filters.ts:219`
-- `toUpdateInput` diffs against `toFormFields(task)`, not against `task` itself, so "unchanged"
-  is defined in the form's own vocabulary (e.g. trimmed strings, sorted tags) — comparing
-  against the raw task previously caused stale-snapshot overwrites when a colleague's edit
-  landed while the dialog was open. `src/features/board/task-mapping.ts:117-131`
-- A second concurrent delete is unsafe: `useDeleteTask`'s `onMutate` takes one cache snapshot
-  per call, and two overlapping deletes would let the later rollback resurrect a task the
-  earlier delete legitimately removed — currently prevented only by the modal confirmation
-  dialog and a disabled Delete button. `src/features/board/use-delete-task.ts:63-69`
+- `toUpdateInput` sends only the fields that changed. `assigneeId: null` must be sent to unassign a task. A blank `position` must be left out, because `null` would unset it. Do not resend the whole form. `src/features/board/task-mapping.ts:117-148`
+- The midnight-UTC date suffix is built in two places: `toApiDateTime` and the inline filter code in `use-board-filters.ts`. Change both together. `src/features/board/task-mapping.ts:27-36` `src/features/board/use-board-filters.ts:219`
+- Referential stability matters. `openEdit` and `openDelete` must keep their identity because `BoardColumn` is wrapped in `memo`, and `NO_USERS`/`NO_TASKS` are module constants for the same reason. `board-render-cost.test.tsx` guards this. `src/features/board/use-board-dialogs.ts:97-107` `src/features/board/board-column.tsx:96` `src/features/board/board-page.tsx:33-42`
+- A failed Users query must be treated differently from one still loading. `readOwner` accepts any owner id only while the status is `'pending'`, and `directoryUnavailable` makes the filter bar and assignee picker explain that the user list failed to load. `src/features/board/use-board-filters.ts:109-118` `src/features/board/board-page.tsx:102`
+- The delete rollback takes one snapshot per mutation. That is safe only while deletes cannot overlap (one modal confirmation at a time), so bulk delete would need a redesign. `src/features/board/use-delete-task.ts:63-70`
+- Code outside `features/board` must import `Task`/`User` from `@/graphql/domain`, not from `task-types.ts`. `src/features/board/task-types.ts:18-22`
+- If you add a field to `TaskPresentation` without adding it to `KIT_FIELD_NAMES`, the build fails. This keeps the card and table-row views showing the same data. `src/features/board/task-card/to-kit-props.ts:35-58`
 
 ## Generated facts
 

@@ -4,9 +4,9 @@ title: "docs"
 paths: ["docs/"]
 tree_hash: "4e26d3493b6418b51bed8933587a0b60cd2fdee1"
 built_at_sha: "ac7cb47c1e590616da040840cb26cb4e203d99f8"
-built_at: "2026-09-26T21:58:14.483Z"
+built_at: "2026-09-30T05:28:33.367Z"
 status: "ok"
-summary: "This is the repository's hand-written reference documentation — three long-form design-decision essays plus the screenshots README embeds — covering deployme..."
+summary: "Prose design notes plus README screenshots."
 generator: "ravn-agents/onboarding 0.1.0"
 ---
 
@@ -15,51 +15,30 @@ generator: "ravn-agents/onboarding 0.1.0"
 > Codebase map page, built at `ac7cb47c1e59`. It says where to look; confirm every claim against the cited code before relying on it.
 
 ## Summary
-This is the repository's hand-written reference documentation — three long-form design-decision
-essays plus the screenshots README embeds — covering deployment architecture, why the design
-system is a separate package, and the testing strategy. `README.md:255` links all three as
-"Read more" pointers, so this is where the reasoning behind non-obvious choices lives rather
-than in code comments. `docs/deployment.md:1`
+Prose design notes plus README screenshots. There is no code here. The three Markdown files explain the decisions behind deployment, the `@ravn/ui-kit` dependency and the test strategy, and `README.md` links to each one. `README.md:255-259` `docs/deployment.md:1`
 
 ## Key files
-- `docs/deployment.md:1` — why a static SPA still needs the `api/graphql.ts` serverless proxy
-  (keeping `API_TOKEN` out of the bundle), the mock/direct/proxied states of `readApiConfig`
-  in `src/lib/env.ts`, and why there is deliberately no CSP.
-- `docs/design-system.md:1` — why `@ravn/ui-kit` is a separate git-tag-pinned package rather
-  than `src/ui/`, which components have migrated, and why `EmptyState`/toasts/icons stay
-  app-owned on purpose.
-- `docs/testing.md:1` — what `npm run gate` checks, what the coverage suite covers versus what
-  it deliberately excludes, and the one end-to-end spec against a live deployment.
-- `docs/screenshots/dashboard.jpg`, `create-task.jpg`, `empty-results.jpg`, `settings.jpg`,
-  `list-view.jpg` — product screenshots embedded by `README.md:17` and `README.md:23`; not
-  referenced from application code except a comment pointer in
-  `src/lib/decommissioned-avatar.ts:21`.
+- `docs/deployment.md:1` — Vercel hosting, why the `api/graphql.ts` proxy exists, the mock/direct/proxied config matrix, the `vercel.json` rewrites and headers, and why there is no CSP. Open it before you touch env config or the proxy.
+- `docs/design-system.md:1` — why the UI components live in the separate `@ravn/ui-kit` repo, which components stay app-owned, and why the dependency is pinned to a git tag.
+- `docs/testing.md:1` — what `npm run gate` and CI check, test conventions, the single e2e spec and the lessons from jsdom compared with a real browser.
+- `docs/screenshots/dashboard.jpg` — embedded in `README.md:17`. The other four JPGs are embedded in the gallery table at `README.md:23-25`.
 
 ## How it works
-- `docs/deployment.md:15-26` documents the three states `readApiConfig` (`src/lib/env.ts`) can
-  return — mock, direct, proxied — and why a URL without a token is treated as unconfigured
-  rather than relaxed into working.
-- `docs/deployment.md:48-51` explains why the proxy is exported as `POST` and not a default
-  handler: Vercel treats a default export as Node's `(req, res) => void`, so the first deploy
-  hung until timeout.
-- `docs/design-system.md:71-84` explains the dependency is a git tag (not a branch or a
-  vendored copy) so `package-lock.json` pins the resolved commit rather than re-resolving on
-  every `npm ci`.
-- `docs/testing.md:56-68` describes `e2e/deployed-proxy.spec.ts` as the only test that exercises
-  `api/graphql.ts` as it actually runs, since nothing in the app imports that file directly.
+- The token never reaches the browser. `api/graphql.ts` reads `API_TOKEN`, which has no `VITE_` prefix, and the app posts to `/api/graphql` on its own origin. `docs/deployment.md:6-13`
+- `readApiConfig` in `src/lib/env.ts` has three states: mock (no URL), direct (absolute URL plus token) and proxied (`/api/graphql`, no token). `docs/deployment.md:15-25`
+- `vercel.json` pins `VITE_API_URL` and rewrites non-static, non-`/api/` paths to `index.html` so that `createBrowserRouter` routes work on a direct hit. `docs/deployment.md:40-46`
+- `@ravn/ui-kit` is installed as `github:f3r21/ravn-ui-kit#<tag>`. Its committed `dist/` is installed without a rebuild, and `package-lock.json` records the resolved commit. `docs/design-system.md:71-84`
+- `EmptyState`, the toast system, the icon set and `ErrorBoundary` are app-owned by design. They are not pending migrations. `docs/design-system.md:46-57`
+- Tests always run against the MSW mock because `vite.config.ts` `test.env` pins the API vars to empty. MSW uses `onUnhandledRequest: 'error'`. `docs/testing.md:34-49`
+- `e2e/deployed-proxy.spec.ts` is the only test that exercises `api/graphql.ts`. It needs `E2E_BASE_URL` and is run by `.github/workflows/e2e.yml` after each deployment. `docs/testing.md:56-78`
 
 ## Gotchas
-- No CSP and no `frame-ancestors` header is a deliberate trade, not an oversight: header rules
-  only apply on a real deployment, never under `vite preview` or local dev, so a broken policy
-  can't be caught before it ships. `docs/deployment.md:60-69`
-- The design-system component/icon counts (49 components, 21 icons, "2 of 41" without stories)
-  are meant to be re-derived from the installed package at whatever tag is pinned, not trusted
-  from prose — the doc itself says an earlier version stayed wrong for three releases.
-  `docs/design-system.md:13-27`
-- Vitest pins `VITE_API_URL`/`VITE_API_TOKEN` empty in `vite.config.ts`'s `test.env` so the unit
-  suite always hits the MSW mock regardless of a developer's local `.env`. `docs/testing.md:34-38`
-- `E2E_BASE_URL` has no localhost default on purpose: a fallback to `npm run dev` would silently
-  turn the deployment check into a flaky local duplicate that proves nothing. `docs/testing.md:64-68`
+- The proxy must be exported as `POST`, not as a default export. Vercel treats a default export as a Node `(req, res)` handler, so every request hung. `docs/deployment.md:48-51`
+- When a kit component fails an assertion in this app, the fix belongs in the kit, not in a weakened test. `docs/design-system.md:67-69`
+- The docs quote no counts or version tags on purpose, because stale numbers kept creeping in. Re-derive them from `package.json` or `npm test`. `docs/design-system.md:73-77` `docs/testing.md:8-9`
+- `board-render-cost.test.tsx` checks the board's memoisation: a search keystroke must re-render zero cards. `docs/testing.md:17-24`
+- `.gitignore` anchors `/docs/superpowers/` and `/*.png` so that the tracked `docs/screenshots/` images are never ignored. `.gitignore:94-97`
+- `npm run lint` checks API usage against `browserslist`. It was added after `URL.canParse` broke older browsers while every test passed. `docs/testing.md:87-94`
 
 ## Generated facts
 

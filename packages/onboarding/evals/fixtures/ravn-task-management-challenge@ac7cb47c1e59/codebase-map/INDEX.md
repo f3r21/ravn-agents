@@ -1,12 +1,12 @@
 ---
 built_at_sha: "ac7cb47c1e590616da040840cb26cb4e203d99f8"
-built_at: "2026-09-26T21:58:14.483Z"
+built_at: "2026-09-30T05:28:33.367Z"
 areas: 14
 generator: "ravn-agents/onboarding 0.1.0"
 ---
 # Codebase map
 
-Built at `ac7cb47c1e59` on 2026-09-26 by ravn-agents/onboarding 0.1.0.
+Built at `ac7cb47c1e59` on 2026-09-30 by ravn-agents/onboarding 0.1.0.
 This map is a router, not a source of truth: it tells you which files to read. Confirm any
 claim against the cited code, and prefer the code when the two disagree. It is never loaded
 automatically; reach it through the `ask-codebase` skill. Refresh with `/ravn-agents:onboard --refresh`.
@@ -15,20 +15,20 @@ automatically; reach it through the `ask-codebase` skill. Refresh with `/ravn-ag
 
 | Area | Paths | What lives there | Page |
 |---|---|---|---|
-| api | `api/` | `api/` is a single Vercel serverless function that proxies the app's GraphQL traffic to RAVN's shared backend, keeping the `API_TOKEN` credential server-side... | [api](areas/api.md) |
-| .claude | `.claude/` | `.claude/` configures how Claude Code (and any agent session) behaves in this repository: hooks that enforce safety and formatting on every tool call, slash... | [claude](areas/claude.md) |
-| docs | `docs/` | This is the repository's hand-written reference documentation — three long-form design-decision essays plus the screenshots README embeds — covering deployme... | [docs](areas/docs.md) |
-| e2e | `e2e/` | This directory holds Playwright's config and a single spec file that drive a real, deployed instance of the app (a Vercel preview) rather than local dev, bec... | [e2e](areas/e2e.md) |
-| .github | `.github/` | This area is the repository's GitHub configuration: CI/CD workflows, Dependabot policy, and PR/issue templates. | [github](areas/github.md) |
-| Repository root | `*` `public/` | This is the repository root of a React 19 + TypeScript task-management dashboard (a RAVN take-home challenge) built with Vite, TanStack Query over GraphQL, a... | [root](areas/root.md) |
-| scripts | `scripts/` | `scripts/` holds standalone Node and shell tools that support the repo but stay out of `npm run gate`: schema-drift and Tailwind-scan checks, figure-generati... | [scripts](areas/scripts.md) |
-| src/app | `src/app/` | `src/app/` is the composition root: it wires the router, error/query providers, and the page-level components that combine features from `src/features/`. | [src-app](areas/src-app.md) |
-| src/features | `src/features/` | `src/features` holds the app's three domain areas — `board`, `navigation`, `profile` — each a self-contained slice of hooks, mappers and components with no c... | [src-features](areas/src-features.md) |
-| src/graphql | `src/graphql/` | `src/graphql` is the app's GraphQL transport and typed vocabulary: a hand-written `fetch`-based client, domain type aliases, and codegen output generated fro... | [src-graphql](areas/src-graphql.md) |
-| src/lib | `src/lib/` | `src/lib/` holds small, dependency-light utilities shared across the app: date/time formatting for due dates, Tailwind class merging, env-var validation, exh... | [src-lib](areas/src-lib.md) |
-| src/mocks | `src/mocks/` | `src/mocks` is an MSW-based fake GraphQL backend: it backs both the dev server (when no API token is configured) and the whole Vitest suite, so the client co... | [src-mocks](areas/src-mocks.md) |
-| src/ui | `src/ui/` | `src/ui/` holds small, shared presentational components — a query status wrapper, an empty-state block, a class-based error boundary and a toast system — use... | [src-ui](areas/src-ui.md) |
-| src (top level) | `src/*` `src/shared/` `src/styles/` `src/test/` | This is the top level of the source tree: the app's real entry point plus the handful of cross-cutting helpers (`src/shared/`, `src/test/`) and the global st... | [src](areas/src.md) |
+| api | `api/` | `api/` is a single Vercel serverless function: the server-side GraphQL proxy that the deployed app posts to at `/api/graphql`. | [api](areas/api.md) |
+| .claude | `.claude/` | `.claude/` is the Claude Code configuration for this repo: project settings with two shell hooks, five slash commands that hold the project's process rituals... | [claude](areas/claude.md) |
+| docs | `docs/` | Prose design notes plus README screenshots. | [docs](areas/docs.md) |
+| e2e | `e2e/` | Playwright tests that drive a real deployment (a Vercel URL), not the dev server. | [e2e](areas/e2e.md) |
+| .github | `.github/` | GitHub configuration for the repository: three Actions workflows (CI gate, dependency review, post-deploy E2E), Dependabot settings, and the PR and issue tem... | [github](areas/github.md) |
+| Repository root | `*` `public/` | The repository root holds the toolchain and deployment config for a React 19 + Vite task board that uses TanStack Query over the RAVN GraphQL API. | [root](areas/root.md) |
+| scripts | `scripts/` | `scripts/` holds the repository's standalone Node and Bash tooling. | [scripts](areas/scripts.md) |
+| src/app | `src/app/` | `src/app/` is the composition layer of the React SPA. | [src-app](areas/src-app.md) |
+| src/features | `src/features/` | `src/features` holds the app's three feature slices. | [src-features](areas/src-features.md) |
+| src/graphql | `src/graphql/` | The app's GraphQL layer. | [src-graphql](areas/src-graphql.md) |
+| src/lib | `src/lib/` | `src/lib` holds the app's small shared helpers with no feature ownership: env/API-mode resolution, UTC due-date maths and formatting, compile-time exhaustive... | [src-lib](areas/src-lib.md) |
+| src/mocks | `src/mocks/` | The MSW (Mock Service Worker) fake of RAVN's GraphQL challenge API. | [src-mocks](areas/src-mocks.md) |
+| src/ui | `src/ui/` | `src/ui/` holds the app's shared building blocks, used across features: a loading/error/ready wrapper for React Query results, an empty-state block, a render... | [src-ui](areas/src-ui.md) |
+| src (top level) | `src/*` `src/shared/` `src/styles/` `src/test/` | The top level of `src/` holds the browser bootstrap (`main.tsx`), which starts the MSW mock worker when needed and then mounts `<App />`. | [src](areas/src.md) |
 
 ## Entry points
 
