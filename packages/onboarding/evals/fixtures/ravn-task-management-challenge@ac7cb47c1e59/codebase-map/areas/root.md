@@ -4,9 +4,9 @@ title: "Repository root"
 paths: ["*","public/"]
 tree_hash: "313620a324fb4c1eec44484ab7f6f96f25416006"
 built_at_sha: "ac7cb47c1e590616da040840cb26cb4e203d99f8"
-built_at: "2026-09-26T21:58:14.483Z"
+built_at: "2026-09-30T05:28:33.367Z"
 status: "ok"
-summary: "This is the repository root of a React 19 + TypeScript task-management dashboard (a RAVN take-home challenge) built with Vite, TanStack Query over GraphQL, a..."
+summary: "The repository root holds the toolchain and deployment config for a React 19 + Vite task board that uses TanStack Query over the RAVN GraphQL API."
 generator: "ravn-agents/onboarding 0.1.0"
 ---
 
@@ -15,74 +15,36 @@ generator: "ravn-agents/onboarding 0.1.0"
 > Codebase map page, built at `ac7cb47c1e59`. It says where to look; confirm every claim against the cited code before relying on it.
 
 ## Summary
-This is the repository root of a React 19 + TypeScript task-management dashboard (a RAVN
-take-home challenge) built with Vite, TanStack Query over GraphQL, and the external
-`@ravn/ui-kit` package. `index.html:24` boots `src/main.tsx`, and the files here configure the
-build, lint, type, test and deploy toolchain the app under `src/` runs through. `package.json:2`
+The repository root holds the toolchain and deployment config for a React 19 + Vite task board that uses TanStack Query over the RAVN GraphQL API. It also holds the committed API schema and the static assets in `public/`. `index.html` boots `/src/main.tsx`. Build, lint, test, codegen and Vercel deploy behaviour are all defined here, and the comments in these files record why each decision was made. `index.html:24` `CLAUDE.md:3-5`
 
 ## Key files
-- `package.json:1` — scripts (`dev`, `build`, `gate`, `codegen`, `schema:check`, ...), the
-  runtime/dev dependency lists, and the `browserslist` array that both `vite.config.ts` and
-  `eslint.config.js` derive their browser floor from.
-- `vite.config.ts:106` — the app's Vite/Vitest config: derives `build.target` from
-  `browserslist` (`vite.config.ts:43-104`), sets Rolldown `codeSplitting` groups for
-  react/react-aria/query chunks (`vite.config.ts:131-138`), dedupes React/React Aria for a
-  future local `@ravn/ui-kit` checkout (`vite.config.ts:195`), and configures the Vitest
-  environment, `TZ: 'Pacific/Kiritimati'`, and 85% coverage thresholds (`vite.config.ts:197-291`).
-- `eslint.config.js:203` — the flat ESLint config: type-checked TS rules, a generated
-  `eslint-plugin-compat` browser-floor check plus a hand-built `no-restricted-properties` list
-  for static Web APIs the plugin misses (`eslint.config.js:124-170`), and the layering rules
-  that ban cross-feature imports and the generated GraphQL barrel (`eslint.config.js:264-387`).
-- `codegen.ts:11` — GraphQL Code Generator config; reads the committed `schema.graphql` (not a
-  live URL) and writes typed, string-mode documents into `src/graphql/generated/`.
-- `CLAUDE.md:1` — process/invariant summary for agents: `gate` is the quality bar, generated
-  types are the domain model, no barrels/test-ids/`any`, and `.claude/rules/` holds the rest.
-- `vitest.setup.ts:33` — global test setup: fakes only `Date` at a fixed instant
-  (`vitest.setup.ts:33-92`), fails any test that logs `console.error`/`console.warn`
-  (`vitest.setup.ts:65-121`), and starts/reset the MSW `server` and `taskStore` around each test.
-- `tsconfig.json:1` — strict compiler options, the `@/*` -> `src/*` path alias, and the
-  `include` list that deliberately excludes `vite.config.ts` (`tsconfig.json:30-35`).
-- `vercel.json:1` — deployment config: proxies `/api/graphql`, rewrites all non-`/api` routes to
-  `index.html` for the SPA router, and sets `X-Content-Type-Options`/`Referrer-Policy` headers.
-- `.corvusrc:1` — declares which onboarding skills apply to this repo and their weights.
+- `CLAUDE.md:7-20` — the command list and the project invariants (no barrels, no `any`, React Aria hooks only). `npm run gate` is the quality bar. Read this first.
+- `package.json:11-17` — `browserslist` is the single source of the browser floor. `vite.config.ts` and `eslint.config.js` both read it. `msw.workerDirectory` points at `public/`, as shown in `package.json:37-41`.
+- `vite.config.ts:106-196` — the build target, the Rolldown chunk groups, the `@` alias to `src/` and the `dedupe` list. The Vitest config (jsdom, env pins, coverage thresholds of 85) is at `vite.config.ts:197-292`.
+- `eslint.config.js:203-455` — flat config. It holds the cross-feature import ban, the exemptions for the navigation shell, and the browser-compat rules generated from MDN data.
+- `vitest.setup.ts:80-125` — global test hooks: the MSW server, a fake `Date`, a gate that fails any test that logs to the console, and `taskStore.reset()`.
+- `codegen.ts:11-49` — graphql-codegen generates `src/graphql/generated/` from `schema.graphql`, using `documentMode: 'string'` and no fragment masking.
+- `schema.graphql:1-15` — the committed introspection of the live API. `npm run schema:check` checks it for drift, and the MSW mocks treat it as their contract.
+- `vercel.json:1-21` — deploy config. It rewrites everything except `api/` to the SPA and sets `VITE_API_URL=/api/graphql` at build time.
+- `public/mockServiceWorker.js:1-10` — generated by `msw init` (MSW 2.15.0). Do not edit it. Lint and Prettier ignore it.
 
 ## How it works
-- `npm run build` runs `typecheck` before `vite build` (`package.json:20`), and `typecheck`
-  itself type-checks the app, `api/`, and `e2e/` as three separate `tsc` projects
-  (`package.json:26`); `npm run gate` chains typecheck, lint, format:check and coverage and is
-  the bar CI enforces (`package.json:35`, `CLAUDE.md:10`).
-- The browser floor is single-sourced from `browserslist` in `package.json:11-17` and converted
-  independently by `vite.config.ts:67-104` (into `build.target`) and `eslint.config.js:32-59`
-  (into MDN compat-data lookups), so the build's syntax floor and the lint's API floor cannot
-  silently diverge.
-- `codegen.ts:12` reads `schema.graphql` from disk to generate `src/graphql/generated/`; the
-  package script `schema:check` (`package.json:31`) instead compares that committed schema
-  against the live API to catch drift.
-- ESLint bans importing `@/graphql/generated` directly (`eslint.config.js:172-199`) and bans
-  `@/features/*` cross-imports outside `src/app/` and two named exemptions in
-  `src/features/navigation/` (`eslint.config.js:264-387`), enforcing the layering CLAUDE.md
-  describes in prose.
-- Vitest is configured with `VITE_API_URL`/`VITE_API_TOKEN` pinned to empty strings and
-  `TZ: Pacific/Kiritimati` so the suite always runs against the mock backend and is insulated
-  from local-timezone due-date bugs (`vite.config.ts:217-246`).
+- The app runs without credentials. If `VITE_API_URL` or `VITE_API_TOKEN` is missing, it falls back to the MSW mock. `.env.example` points at the live Railway endpoint. `.env.example:1-10`
+- In production the browser never holds the token. Vercel builds with `VITE_API_URL=/api/graphql` and an empty token, so requests go through the `api/` proxy function. `vercel.json:5-11` `.vercelignore:3-12`
+- `readDeclaredBrowserFloor()` turns each `browserslist` entry into an esbuild target. `eslint.config.js` reads the same list into MDN names and bans any unsupported static Web API member, such as `URL.canParse`. `vite.config.ts:67-104` `eslint.config.js:124-170`
+- Codegen reads operations from `src/**/*.graphql` and checks them against `schema.graphql`, so neither codegen nor CI needs network access. `DateTime` is mapped to `string`. `codegen.ts:12-30`
+- The bundle is split into `react`, `react-aria` and `query` chunks. `@ravn/ui-kit` stays in the app chunk on purpose, because it changes at the app's pace. `vite.config.ts:131-138`
+- `typecheck` runs three `tsc` projects: the root, `api` and `e2e`. The root `tsconfig.json` includes only `src`, `vitest.setup.ts` and `codegen.ts`. `package.json:26` `tsconfig.json:35`
 
 ## Gotchas
-- `vite.config.ts` is intentionally excluded from `tsconfig.json`'s `include` because Vitest
-  bundles its own copy of Vite, which otherwise produces a spurious `Plugin` type clash
-  (`tsconfig.json:30-34`); `eslint.config.js:241` compensates by listing it under
-  `allowDefaultProject` for typed linting.
-- `no-restricted-imports` for the generated barrel uses `paths`, not `patterns`, because a
-  gitignore-style `patterns` glob on a bare directory name matched every real
-  `@/graphql/generated/graphql` import too (`eslint.config.js:172-199`).
-- `vite.config.ts` build output deliberately does not exclude the MSW mock chunk from the
-  250 kB `chunkSizeWarningLimit`; it is shipped on purpose and CI's bundle budget skips it by
-  name instead (`vite.config.ts:142-153`).
-- `vitest.setup.ts` fails a test that merely logs `console.error`/`console.warn`, and the
-  gate is reinstalled every `beforeEach` (not once) because `restoreMocks` is not set, so a
-  leaked `vi.spyOn` from one test would otherwise silently disable the gate for the rest of the
-  file (`vitest.setup.ts:46-51`).
-- `Closes #<n>` in a PR description has no effect here because GitHub only auto-closes issues
-  on merge to the default branch, and `main` (not `dev`) is that branch (`CLAUDE.md:37-38`).
+- `browserslist` entries must use the form `<browser> >= <version>`. A usage-share query such as `defaults` makes both the Vite config and the ESLint config throw at startup. `vite.config.ts:61` `eslint.config.js:29`
+- Tests pin `TZ=Pacific/Kiritimati` and set `VITE_API_URL`/`VITE_API_TOKEN` to empty strings. Without these, a local `.env` with real credentials silently breaks tests, and bugs that shift dates by one day go unnoticed. `vite.config.ts:217-246`
+- A test fails if it calls `console.error` or `console.warn`. To opt out on purpose, call `vi.spyOn(console, 'error').mockImplementation(() => {})` inside that test. `Date` is faked to `2026-08-02T12:00Z` for the whole suite. `vitest.setup.ts:33` `vitest.setup.ts:107-120`
+- Coverage `exclude` replaces the defaults instead of adding to them. Keep the `coverageConfigDefaults.exclude` spread, or test files start counting as source. `vite.config.ts:254-259`
+- `.vercelignore` replaces `.gitignore` for Vercel uploads, so it has to list `.env` again. An earlier deploy leaked the token into the bundle this way. `.vercelignore:3-15`
+- Do not remove the `dedupe` entries. If you switch `@ravn/ui-kit` to `file:../ravn-ui-kit`, removing them causes duplicate React and React Aria copies, which show up as "Invalid hook call" or broken `FocusScope` nesting. `vite.config.ts:176-195`
+- `.worktrees/` must stay excluded in Vitest, ESLint and Prettier. Otherwise these tools pick up another branch's copy of the source. `vite.config.ts:216` `.prettierignore:9-12`
+- Import `@/graphql/generated/graphql`, never the generated `index` barrel, which ESLint bans. `vite.config.ts` is not typechecked, so a malformed config only fails when Vite starts. `eslint.config.js:192-199` `tsconfig.json:30-35`
 
 ## Generated facts
 
@@ -119,7 +81,6 @@ Produced by code from the git tree at the stamped SHA; not written by a model.
 - `index.html -> /src/main.tsx`
 
 ### Package `package.json` (ravn-task-management-challenge)
-
 
 Scripts:
 

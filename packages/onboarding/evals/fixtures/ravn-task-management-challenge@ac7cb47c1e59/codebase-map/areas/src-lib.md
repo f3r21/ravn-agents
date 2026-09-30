@@ -4,9 +4,9 @@ title: "src/lib"
 paths: ["src/lib/"]
 tree_hash: "f4658928adc60c5ac40fe812867dab5e26e673df"
 built_at_sha: "ac7cb47c1e590616da040840cb26cb4e203d99f8"
-built_at: "2026-09-26T21:58:14.483Z"
+built_at: "2026-09-30T05:28:33.367Z"
 status: "ok"
-summary: "`src/lib/` holds small, dependency-light utilities shared across the app: date/time formatting for due dates, Tailwind class merging, env-var validation, exh..."
+summary: "`src/lib` holds the app's small shared helpers with no feature ownership: env/API-mode resolution, UTC due-date maths and formatting, compile-time exhaustive..."
 generator: "ravn-agents/onboarding 0.1.0"
 ---
 
@@ -15,55 +15,34 @@ generator: "ravn-agents/onboarding 0.1.0"
 > Codebase map page, built at `ac7cb47c1e59`. It says where to look; confirm every claim against the cited code before relying on it.
 
 ## Summary
-`src/lib/` holds small, dependency-light utilities shared across the app: date/time formatting for
-due dates, Tailwind class merging, env-var validation, exhaustiveness helpers, and one workaround
-for a dead avatar host. Nothing here holds React state except `use-current-day.ts`; everything
-else is pure functions imported from `src/features/`, `src/graphql/` and `src/ui/`. `src/lib/env.ts:1`
+`src/lib` holds the app's small shared helpers with no feature ownership: env/API-mode resolution, UTC due-date maths and formatting, compile-time exhaustiveness helpers, the Tailwind `cn` class joiner, a day-rollover React hook and a dead-avatar-host filter. Features under `src/features`, `src/ui`, `src/graphql/client.ts` and `src/main.tsx` import them through the `@/lib/...` alias. `src/lib/env.ts:87` `src/lib/due-date.ts:61`
 
 ## Key files
-- `src/lib/env.ts:1` — the app's one read of `import.meta.env`, producing an `ApiConfig` discriminated
-  union (`direct` with a token, `proxied` without one, or `undefined` for mock mode). Open this to
-  understand how the client decides where to send requests and whether MSW starts. `src/lib/env.ts:18`
-- `src/lib/due-date.ts:1` — all due-date math and formatting, deliberately reading dates in UTC
-  rather than local time so a shared board shows the same "Today"/"overdue" to every viewer.
-  `src/lib/due-date.ts:20-26`
-- `src/lib/cn.ts:11` — `clsx` + `tailwind-merge` wrapper used anywhere a component accepts a
-  `className` override.
-- `src/lib/decommissioned-avatar.ts:51` — strips out avatar URLs pointing at a dead dicebear host so
-  `Avatar` falls back to initials instead of a broken image.
-- `src/lib/use-current-day.ts:24` — the only stateful hook in this area; returns a `Date` that only
-  changes identity when the UTC calendar day rolls over, feeding the board's due-date badges.
-- `src/lib/exhaustive.ts:19` — compiler-enforced coverage of a string union, used for status/tag/point
-  lists generated from `schema.graphql`.
-- `src/lib/assert-never.ts:11` — throw-on-`never` helper for exhaustive `switch` default arms.
+- `src/lib/env.ts:18` — `ApiConfig` union and `readApiConfig`; open when changing how `VITE_API_URL`/`VITE_API_TOKEN` pick mock, direct or proxied mode. Consumed by `src/graphql/client.ts`, `src/main.tsx` and `BoardPage`'s mock banner.
+- `src/lib/due-date.ts:81` — `dueDateTone`, `formatDueDate`, `parseApiDate`, `toDateInputValue`, `formatUtcTimestamp`; open for any due-date badge text, colour tier or date-input value.
+- `src/lib/use-current-day.ts:24` — `useCurrentDay` hook giving board and My Tasks pages a `now` that changes only on UTC day rollover.
+- `src/lib/decommissioned-avatar.ts:51` — `avatarSrcUnlessDecommissioned`, used by `task-card/to-kit-props.ts`, `app-header.tsx` and `profile-page.tsx` so dead dicebear URLs fall back to initials.
+- `src/lib/exhaustive.ts:19` — `exhaustiveList<Union>()([...])`, used in `features/board/task-types.ts` to prove status/tag/estimate lists cover the generated GraphQL unions.
+- `src/lib/assert-never.ts:11` — `assertNever` for `switch` default arms; throws at runtime too.
+- `src/lib/cn.ts:11` — `cn` = `twMerge(clsx(...))`, used by UI components that accept `className`.
+- Each module except `exhaustive.ts` has a sibling `*.test.ts` (for example `src/lib/env.test.ts:1`).
 
 ## How it works
-- `readApiConfig` treats a value as "proxied" (no token attached) only when the URL resolves to the
-  same origin per `isSameOriginPath`, which parses the URL rather than pattern-matching the string
-  so protocol-relative spellings like `/\host` are also caught. `src/lib/env.ts:52-62` `src/lib/env.ts:87-104`
-- `shouldStartMockWorker` and `isUsingMockApi` both reduce to "does `readApiConfig` return
-  `undefined`", so `main.tsx`'s decision to boot the MSW worker and the board's "mocked data" banner
-  can never disagree. `src/lib/env.ts:116` `src/lib/env.ts:134-136`
-- `dueDateTone`'s three tones (`overdue`, `soon`, `normal`) are named to match `@ravn/ui-kit`'s
-  `DueDateUrgency` one-for-one, so `task-card/to-kit-props.ts` hands a tone straight to the kit
-  instead of the app keeping its own colour table. `src/lib/due-date.ts:74-90`
-- `useCurrentDay` polls every 60 seconds but only calls `setNow` when `toDateInputValue` (a UTC-day
-  string) actually changes, so the returned `Date`'s identity is stable across re-renders and board
-  cards memoised on it don't re-render every minute. `src/lib/use-current-day.ts:24-38`
-- `formatUtcTimestamp` and `formatDueDate` both build display strings from `utcParts`, an
-  `Intl.DateTimeFormat` with an explicit `timeZone: 'UTC'`, rather than reading a `Date`'s local
-  getters into a new `Date` — the latter breaks across a DST transition. `src/lib/due-date.ts:28-58`
+- `readApiConfig` returns `undefined` (mock) when the URL is empty; `proxied` when the URL is a same-origin path (token dropped); `direct` only when an absolute URL comes with a non-blank token. `src/lib/env.ts:87-104`
+- Same-origin is decided by resolving against the reserved host `https://same-origin.invalid`, plus a leading-`/` requirement, so `//host`, `/\host` and control-character spellings are all rejected. `src/lib/env.ts:28` `src/lib/env.ts:52-62`
+- `isUsingMockApi` and `shouldStartMockWorker` are both derived from the absence of a config, and `apiUrl` falls back to `MOCK_API_URL` (`https://mock.local/graphql`), which only the MSW worker answers. `src/lib/env.ts:116` `src/lib/env.ts:134-148`
+- Due dates are compared as UTC day numbers: `daysUntilDue` subtracts `utcDayNumber`s, and `dueDateTone` maps <0 to `overdue`, 0-1 to `soon`, and anything later to `normal`. `src/lib/due-date.ts:22-26` `src/lib/due-date.ts:81-90`
+- Formatting goes through a single `Intl.DateTimeFormat('en-GB', { timeZone: 'UTC' })` and reassembles the parts by hand to produce the "6 July, 2020" design format and "... at HH:MM UTC" timestamps. `src/lib/due-date.ts:42-58` `src/lib/due-date.ts:96-148`
+- `useCurrentDay` polls every 60 s and keeps the same `Date` object unless `toDateInputValue` (the UTC day) changed. `src/lib/use-current-day.ts:25-38`
 
 ## Gotchas
-- `avatarSrcUnlessDecommissioned` must use `new URL(...)` in a `try`/`catch`, not `URL.canParse`:
-  `canParse` is above this project's browserslist floor and threw at runtime on real browsers
-  before `eslint.config.js` started catching it statically. `src/lib/decommissioned-avatar.ts:58-77`
-- Due dates and account timestamps (`createdAt`/`updatedAt`) are both rendered in UTC on purpose,
-  even though the latter are instants — mixing UTC and local-zone dates on the same screen would be
-  worse than a UTC label everywhere. `src/lib/due-date.ts:130-148`
-- A whitespace-only `VITE_API_TOKEN` or `VITE_API_URL` is treated as unset by `readApiConfig`,
-  because a half-filled `.env` (`VITE_API_TOKEN=`) is more common than a deliberate empty token.
-  `src/lib/env.ts:84-93`
+- Do not gate the MSW worker on `VITE_API_URL` alone: `.env.example` ships a URL with a blank token, and that combination once left requests aimed at the unresolvable mock host. Use `shouldStartMockWorker`. `src/lib/env.ts:118-136`
+- `ApiConfig` is a discriminated union on purpose; only the `direct` member has `token`, so proxied mode cannot send `Bearer undefined`. Keep the token off the proxied shape, because any `VITE_` value ends up in `dist/`. `src/lib/env.ts:10-19` `src/lib/env.ts:72-75`
+- Never read due dates in local time: API values sit at midnight UTC, and local reads shift them a day (for example, "Yesterday" in red for a task due tomorrow). Do not build `new Date(y, m, d, H, M)` from UTC getters either, because that breaks across DST gaps. `src/lib/due-date.ts:5-19` `src/lib/due-date.ts:28-41`
+- `DueDateTone` names must stay identical to `@ravn/ui-kit`'s `DueDateUrgency`; the kit owns the colour table. `src/lib/due-date.ts:73-79`
+- `useCurrentDay`'s returned object identity is load-bearing: card props are memoised on it, so returning a fresh `Date` each tick re-renders the whole board. `src/lib/use-current-day.ts:14-18`
+- `avatarSrcUnlessDecommissioned` uses `try { new URL() }` instead of `URL.canParse`, which is above the browserslist floor and once crashed the board. An `onError` fallback cannot work because the dead host returns a valid SVG with a 410. `src/lib/decommissioned-avatar.ts:9-14` `src/lib/decommissioned-avatar.ts:58-77`
+- `parseApiDate` returns `undefined` rather than an `Invalid Date`, so callers must handle a missing date explicitly. `src/lib/due-date.ts:111-121`
 
 ## Generated facts
 

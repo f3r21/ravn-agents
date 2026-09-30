@@ -1,0 +1,18 @@
+{
+  "finalText": "The codebase map is built at commit `8acf17d` (`8acf17dcca28036fa99cf09408e3646901d6add1`).\n\n- **Areas mapped (14 of 14):** api, .claude, docs, e2e, .github, repository root (`*` + `public/`), scripts, src (top level), src/app, src/features, src/graphql, src/lib, src/mocks, src/ui. Every draft passed validation on the first attempt, so none needed a retry.\n- **Areas not covered:** none.\n- **INDEX.md:** 56 lines, at `docs/codebase-map/INDEX.md`. The area pages are in `docs/codebase-map/areas/`.\n\nReminders:\n- Review `docs/codebase-map/` and commit it yourself. `.build/` has its own `.gitignore`, so it stays out of commits.\n- Use `/ravn-agents:ask-codebase` to query the map. Don't add an `@docs/codebase-map` import to CLAUDE.md, because imports load at every launch. A one-line pointer there is fine.\n- A `SessionStart` hook will tell you when areas go stale. Refresh them with `/ravn-agents:onboard --refresh`.",
+  "inputTokens": 2115734,
+  "outputTokens": 55860,
+  "toolCalls": 194,
+  "toolsByName": {
+    "Bash": 2,
+    "Agent": 14,
+    "Read": 134,
+    "Glob": 7,
+    "Grep": 23,
+    "Write": 14
+  },
+  "costUsd": 3.3416599999999996,
+  "wallSeconds": 89.312,
+  "turns": 2,
+  "isError": false
+}
